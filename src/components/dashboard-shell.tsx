@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { onAuthStateChanged, signOut, type User } from "firebase/auth";
 import { useRouter } from "next/navigation";
 
-import { auth } from "@/lib/auth";
+import { getFirebaseAuth } from "@/lib/auth";
 import { createDish, subscribeToDishes, type Dish } from "@/lib/dishes";
 import styles from "@/app/dashboard/dashboard.module.css";
 
@@ -25,6 +25,7 @@ export default function DashboardShell() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    const auth = getFirebaseAuth();
     const unsubscribe = onAuthStateChanged(auth, (nextUser) => {
       setUser(nextUser);
       setIsCheckingSession(false);
@@ -54,6 +55,7 @@ export default function DashboardShell() {
   }, [user]);
 
   const handleSignOut = () => {
+    const auth = getFirebaseAuth();
     setIsSigningOut(true);
 
     void signOut(auth).finally(() => {

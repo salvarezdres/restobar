@@ -9,7 +9,7 @@ import {
 } from "firebase/auth";
 import { useRouter } from "next/navigation";
 
-import { auth, googleProvider } from "@/lib/auth";
+import { getFirebaseAuth, getGoogleProvider } from "@/lib/auth";
 import styles from "@/app/page.module.css";
 
 function formatUserName(user: User) {
@@ -26,6 +26,7 @@ export default function GoogleAuthCard() {
   );
 
   useEffect(() => {
+    const auth = getFirebaseAuth();
     const unsubscribe = onAuthStateChanged(auth, (nextUser) => {
       setUser(nextUser);
 
@@ -38,6 +39,9 @@ export default function GoogleAuthCard() {
   }, [router]);
 
   const handleGoogleLogin = () => {
+    const auth = getFirebaseAuth();
+    const googleProvider = getGoogleProvider();
+
     setError(null);
     setIsLoading(true);
     setPendingLabel("login");
@@ -60,6 +64,8 @@ export default function GoogleAuthCard() {
   };
 
   const handleLogout = () => {
+    const auth = getFirebaseAuth();
+
     setError(null);
     setIsLoading(true);
     setPendingLabel("logout");

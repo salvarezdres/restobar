@@ -1,19 +1,40 @@
 import {
+  browserLocalPersistence,
   GoogleAuthProvider,
   getAuth,
   setPersistence,
-  browserLocalPersistence,
+  type Auth,
 } from "firebase/auth";
 
 import { firebaseApp } from "@/lib/firebase";
 
-export const auth = getAuth(firebaseApp);
-export const googleProvider = new GoogleAuthProvider();
+let authInstance: Auth | null = null;
+let googleProviderInstance: GoogleAuthProvider | null = null;
 
-googleProvider.setCustomParameters({
-  prompt: "select_account",
-});
+function ensureBrowser() {
+  if (typeof window === "undefined") {
+    throw new Error("Firebase Auth solo puede inicializarse en el navegador.");
+  }
+}
 
-if (typeof window !== "undefined") {
-  void setPersistence(auth, browserLocalPersistence);
+export function getFirebaseAuth() {
+  ensureBrowser();
+
+  if (!authInstance) {
+    authInstance = getAuth(firebaseApp);
+    void setPersistence(authInstance, browserLocalPersistence);
+  }
+
+  return authInstance;
+}
+
+export function getGoogleProvider() {
+  if (!googleProviderInstance) {
+    googleProviderInstance = new GoogleAuthProvider();
+    googleProviderInstance.setCustomParameters({
+      prompt: "select_account",
+    });
+  }
+
+  return googleProviderInstance;
 }
