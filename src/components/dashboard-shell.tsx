@@ -4,9 +4,9 @@ import { useEffect, useState } from "react";
 import { onAuthStateChanged, signOut, type User } from "firebase/auth";
 import { useRouter } from "next/navigation";
 
+import styles from "@/app/dashboard/dashboard.module.css";
 import { getFirebaseAuth } from "@/lib/auth";
 import { createDish, subscribeToDishes, type Dish } from "@/lib/dishes";
-import styles from "@/app/dashboard/dashboard.module.css";
 
 function formatName(user: User) {
   return user.displayName ?? user.email ?? "Usuario";
@@ -72,7 +72,7 @@ export default function DashboardShell() {
     const trimmedDescription = description.trim();
 
     if (!trimmedName || !trimmedDescription) {
-      setError("Cada platillo necesita nombre y descripción.");
+      setError("Cada platillo necesita nombre y descripcion.");
       return;
     }
 
@@ -105,7 +105,7 @@ export default function DashboardShell() {
     return (
       <section className={styles.dashboardCard}>
         <p className={styles.overline}>Menu Creator</p>
-        <h1 className={styles.title}>Validando sesión...</h1>
+        <h1 className={styles.stateTitle}>Validando sesion...</h1>
       </section>
     );
   }
@@ -119,10 +119,10 @@ export default function DashboardShell() {
       <div className={styles.header}>
         <div className={styles.headerCopy}>
           <p className={styles.overline}>Curated Restaurant Menu</p>
-          <h1 className={styles.title}>Menu</h1>
+          <h1 className={styles.stateTitle}>Dashboard editorial del menu</h1>
           <p className={styles.subtitle}>
-            Crea una carta amplia, elegante y fácil de actualizar. Sesión activa
-            para {formatName(user)}.
+            Crea una carta amplia, elegante y sobria. Sesion activa para{" "}
+            {formatName(user)}.
           </p>
         </div>
 
@@ -135,7 +135,7 @@ export default function DashboardShell() {
             }}
             type="button"
           >
-            Añadir platillos
+            Anadir platillos
           </button>
 
           <button
@@ -144,7 +144,7 @@ export default function DashboardShell() {
             onClick={handleSignOut}
             type="button"
           >
-            {isSigningOut ? "Saliendo..." : "Cerrar sesión"}
+            {isSigningOut ? "Saliendo..." : "Cerrar sesion"}
           </button>
         </div>
       </div>
@@ -156,7 +156,7 @@ export default function DashboardShell() {
           <div className={styles.composerHeader}>
             <div>
               <p className={styles.sectionLabel}>Nuevo platillo</p>
-              <h2 className={styles.sectionTitle}>Añadir a la carta</h2>
+              <h2 className={styles.sectionTitle}>Anadir a la carta</h2>
             </div>
 
             <button
@@ -181,7 +181,7 @@ export default function DashboardShell() {
           </label>
 
           <label className={styles.field}>
-            <span>Descripción</span>
+            <span>Descripcion</span>
             <textarea
               onChange={(event) => setDescription(event.target.value)}
               placeholder="Describe el plato con un tono editorial y apetitoso."
@@ -206,7 +206,7 @@ export default function DashboardShell() {
           <span className={styles.menuWord}>Menu</span>
           <p className={styles.menuLead}>
             Una carta viva conectada con Firestore para editar platillos sin
-            tocar código.
+            tocar codigo.
           </p>
         </div>
 
@@ -226,10 +226,12 @@ export default function DashboardShell() {
           </div>
         ) : (
           <div className={styles.emptyState}>
-            <p className={styles.sectionLabel}>Carta vacía</p>
-            <h2 className={styles.sectionTitle}>Tu menú todavía no tiene platillos.</h2>
+            <p className={styles.sectionLabel}>Carta vacia</p>
+            <h2 className={styles.sectionTitle}>
+              Tu menu todavia no tiene platillos.
+            </h2>
             <p className={styles.emptyHint}>
-              Usa el botón <strong>Añadir platillos</strong> para crear el primer
+              Usa el boton <strong>Anadir platillos</strong> para crear el primer
               elemento y verlo aparecer en esta carta.
             </p>
           </div>

@@ -1,13 +1,11 @@
 import GoogleAuthCard from "@/components/google-auth-card";
 
-import styles from "./page.module.css";
-
 export default function Home() {
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
+    <main className="min-h-dvh bg-[#0b0b0b]">
+      <div className="flex min-h-dvh items-center justify-center px-6 py-10">
         <GoogleAuthCard />
-      </main>
-    </div>
+      </div>
+    </main>
   );
 }

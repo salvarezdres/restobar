@@ -4,9 +4,9 @@
   justify-content: center;
   padding: 32px;
   background:
-    radial-gradient(circle at top left, rgba(255, 209, 141, 0.68), transparent 28%),
-    radial-gradient(circle at top right, rgba(255, 255, 255, 0.42), transparent 24%),
-    linear-gradient(180deg, #f2ddbf 0%, #d5b58b 100%);
+    radial-gradient(circle at top left, rgba(201, 164, 76, 0.14), transparent 24%),
+    radial-gradient(circle at bottom right, rgba(201, 164, 76, 0.08), transparent 22%),
+    linear-gradient(180deg, #050505 0%, #0c0c0c 100%);
 }
 
 .main {
@@ -38,20 +38,21 @@
   font-weight: 700;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: #7e5c42;
+  color: rgba(201, 164, 76, 0.72);
 }
 
-.title {
-  font-size: clamp(4rem, 12vw, 8rem);
-  line-height: 0.88;
-  letter-spacing: -0.06em;
-  color: #25150d;
+.stateTitle {
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: #f2e7c7;
+  text-wrap: balance;
 }
 
 .subtitle {
   max-width: 62ch;
   line-height: 1.7;
-  color: #5f4638;
+  color: rgba(255, 247, 233, 0.68);
   font-size: 1rem;
 }
 
@@ -71,24 +72,29 @@
   border: 1px solid transparent;
   border-radius: 999px;
   background: transparent;
-  color: #fff4e4;
+  color: #f6e8c7;
   font: inherit;
   font-weight: 700;
   cursor: pointer;
+  transition:
+    transform 120ms ease,
+    background-color 120ms ease,
+    border-color 120ms ease,
+    box-shadow 120ms ease;
 }
 
 .addButton,
 .saveButton {
-  background: linear-gradient(135deg, #2f1d15, #62412f);
-  color: #fff1dd;
-  box-shadow: 0 16px 34px rgba(47, 29, 21, 0.18);
+  background: linear-gradient(135deg, #a9852d, #d7b55b);
+  color: #16120b;
+  box-shadow: 0 12px 28px rgba(201, 164, 76, 0.14);
 }
 
 .signOutButton,
 .dismissButton {
-  border-color: rgba(60, 42, 31, 0.18);
-  color: #533b2f;
-  background: rgba(255, 252, 246, 0.56);
+  border-color: rgba(201, 164, 76, 0.22);
+  color: #f3e5bf;
+  background: rgba(20, 20, 20, 0.88);
 }
 
 .composer,
@@ -99,9 +105,11 @@
   gap: 18px;
   padding: 26px;
   border-radius: 32px;
-  border: 1px solid rgba(74, 53, 39, 0.12);
-  background: rgba(255, 250, 242, 0.84);
-  box-shadow: 0 22px 54px rgba(79, 57, 38, 0.1);
+  border: 1px solid rgba(201, 164, 76, 0.22);
+  background: linear-gradient(180deg, rgba(20, 20, 20, 0.96), rgba(10, 10, 10, 0.96));
+  box-shadow:
+    inset 0 0 0 1px rgba(201, 164, 76, 0.05),
+    0 18px 40px rgba(0, 0, 0, 0.28);
 }
 
 .composerHeader {
@@ -115,11 +123,11 @@
   font-size: 0.78rem;
   text-transform: uppercase;
   letter-spacing: 0.16em;
-  color: #8c6648;
+  color: rgba(201, 164, 76, 0.74);
 }
 
 .sectionTitle {
-  color: #25150d;
+  color: #f5e9c8;
   font-size: clamp(1.7rem, 4vw, 2.4rem);
   line-height: 1.05;
 }
@@ -128,7 +136,7 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  color: #523d31;
+  color: #f2e5c0;
   font-family: Arial, Helvetica, sans-serif;
   font-size: 0.92rem;
 }
@@ -137,10 +145,10 @@
 .field textarea {
   width: 100%;
   padding: 14px 16px;
-  border: 1px solid rgba(74, 53, 39, 0.14);
+  border: 1px solid rgba(201, 164, 76, 0.18);
   border-radius: 20px;
-  background: rgba(255, 255, 255, 0.92);
-  color: #2b1e18;
+  background: #121212;
+  color: #fff7e8;
   font: inherit;
 }
 
@@ -149,12 +157,21 @@
   min-height: 120px;
 }
 
+.field input::placeholder,
+.field textarea::placeholder {
+  color: rgba(255, 247, 233, 0.34);
+}
+
+.field input:focus,
+.field textarea:focus {
+  outline: none;
+  border-color: rgba(201, 164, 76, 0.42);
+  box-shadow: 0 0 0 1px rgba(201, 164, 76, 0.22);
+}
+
 .menuPaper {
   gap: 28px;
   padding: 34px;
-  background:
-    linear-gradient(180deg, rgba(255, 252, 246, 0.98), rgba(245, 232, 212, 0.96)),
-    rgba(255, 250, 242, 0.94);
 }
 
 .menuHeader {
@@ -167,14 +184,14 @@
   font-size: clamp(4rem, 10vw, 7rem);
   line-height: 0.9;
   letter-spacing: -0.08em;
-  color: #2b1a12;
+  color: #d1ab4b;
 }
 
 .menuLead {
   max-width: 52ch;
   font-size: 1rem;
   line-height: 1.7;
-  color: #654f3f;
+  color: rgba(255, 247, 233, 0.68);
 }
 
 .menuList {
@@ -187,7 +204,7 @@
   flex-direction: column;
   gap: 14px;
   padding: 20px 0;
-  border-top: 1px solid rgba(74, 53, 39, 0.12);
+  border-top: 1px solid rgba(201, 164, 76, 0.14);
 }
 
 .menuItem:first-child {
@@ -203,7 +220,7 @@
 }
 
 .menuIndex {
-  color: #b58b61;
+  color: rgba(201, 164, 76, 0.7);
   font-size: 0.92rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -211,7 +228,7 @@
 }
 
 .dishName {
-  color: #291912;
+  color: #f6eacc;
   font-size: clamp(1.5rem, 4vw, 2.35rem);
   line-height: 1;
   letter-spacing: -0.04em;
@@ -220,23 +237,23 @@
 .dishDescription {
   padding-left: 64px;
   max-width: 72ch;
-  color: #5d4839;
+  color: rgba(255, 247, 233, 0.66);
   line-height: 1.8;
   font-size: 1rem;
 }
 
 .emptyHint,
 .errorBanner {
-  color: #634c3c;
+  color: rgba(255, 247, 233, 0.7);
   line-height: 1.7;
 }
 
 .errorBanner {
   padding: 14px 16px;
   border-radius: 18px;
-  background: rgba(176, 61, 44, 0.12);
-  border: 1px solid rgba(176, 61, 44, 0.1);
-  color: #8d311f;
+  background: rgba(98, 26, 20, 0.28);
+  border: 1px solid rgba(215, 132, 120, 0.14);
+  color: #f0aa9d;
 }
 
 .addButton:disabled,
@@ -251,8 +268,14 @@
   .addButton:hover,
   .signOutButton:hover,
   .saveButton:hover,
-  .signOutButton:hover {
+  .dismissButton:hover {
     transform: translateY(-1px);
+  }
+
+  .signOutButton:hover,
+  .dismissButton:hover {
+    background: rgba(30, 30, 30, 0.98);
+    border-color: rgba(201, 164, 76, 0.34);
   }
 }
 
