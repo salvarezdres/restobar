@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Restobar FE",
-  description: "Frontend deployado en Firebase Hosting y conectado a Firestore.",
+  title: "Menu Creator",
+  description: "Editor de cartas elegantes con login de Google y persistencia en Firestore.",
 };
 
 export default function RootLayout({

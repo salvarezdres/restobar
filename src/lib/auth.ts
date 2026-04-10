@@ -1,0 +1,19 @@
+import {
+  GoogleAuthProvider,
+  getAuth,
+  setPersistence,
+  browserLocalPersistence,
+} from "firebase/auth";
+
+import { firebaseApp } from "@/lib/firebase";
+
+export const auth = getAuth(firebaseApp);
+export const googleProvider = new GoogleAuthProvider();
+
+googleProvider.setCustomParameters({
+  prompt: "select_account",
+});
+
+if (typeof window !== "undefined") {
+  void setPersistence(auth, browserLocalPersistence);
+}

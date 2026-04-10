@@ -1,0 +1,238 @@
+'use client'
+
+import { useEffect, useState } from "react";
+import { onAuthStateChanged, signOut, type User } from "firebase/auth";
+import { useRouter } from "next/navigation";
+
+import { auth } from "@/lib/auth";
+import { createDish, subscribeToDishes, type Dish } from "@/lib/dishes";
+import styles from "@/app/dashboard/dashboard.module.css";
+
+function formatName(user: User) {
+  return user.displayName ?? user.email ?? "Usuario";
+}
+
+export default function DashboardShell() {
+  const router = useRouter();
+  const [user, setUser] = useState<User | null>(null);
+  const [dishes, setDishes] = useState<Dish[]>([]);
+  const [isCheckingSession, setIsCheckingSession] = useState(true);
+  const [isSigningOut, setIsSigningOut] = useState(false);
+  const [isComposerOpen, setIsComposerOpen] = useState(false);
+  const [isSavingDish, setIsSavingDish] = useState(false);
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (nextUser) => {
+      setUser(nextUser);
+      setIsCheckingSession(false);
+
+      if (!nextUser) {
+        setDishes([]);
+        router.replace("/");
+      }
+    });
+
+    return unsubscribe;
+  }, [router]);
+
+  useEffect(() => {
+    if (!user) {
+      return;
+    }
+
+    return subscribeToDishes(
+      (nextDishes) => {
+        setDishes(nextDishes);
+      },
+      (snapshotError) => {
+        setError(snapshotError.message);
+      },
+    );
+  }, [user]);
+
+  const handleSignOut = () => {
+    setIsSigningOut(true);
+
+    void signOut(auth).finally(() => {
+      router.replace("/");
+    });
+  };
+
+  const handleCreateDish = () => {
+    if (!user) {
+      return;
+    }
+
+    const trimmedName = name.trim();
+    const trimmedDescription = description.trim();
+
+    if (!trimmedName || !trimmedDescription) {
+      setError("Cada platillo necesita nombre y descripción.");
+      return;
+    }
+
+    setError(null);
+    setIsSavingDish(true);
+
+    void createDish({
+      name: trimmedName,
+      description: trimmedDescription,
+      createdBy: user.uid,
+    })
+      .then(() => {
+        setName("");
+        setDescription("");
+        setIsComposerOpen(false);
+      })
+      .catch((createError: unknown) => {
+        setError(
+          createError instanceof Error
+            ? createError.message
+            : "No se pudo guardar el platillo.",
+        );
+      })
+      .finally(() => {
+        setIsSavingDish(false);
+      });
+  };
+
+  if (isCheckingSession) {
+    return (
+      <section className={styles.dashboardCard}>
+        <p className={styles.overline}>Menu Creator</p>
+        <h1 className={styles.title}>Validando sesión...</h1>
+      </section>
+    );
+  }
+
+  if (!user) {
+    return null;
+  }
+
+  return (
+    <section className={styles.dashboardCard}>
+      <div className={styles.header}>
+        <div className={styles.headerCopy}>
+          <p className={styles.overline}>Curated Restaurant Menu</p>
+          <h1 className={styles.title}>Menu</h1>
+          <p className={styles.subtitle}>
+            Crea una carta amplia, elegante y fácil de actualizar. Sesión activa
+            para {formatName(user)}.
+          </p>
+        </div>
+
+        <div className={styles.headerActions}>
+          <button
+            className={styles.addButton}
+            onClick={() => {
+              setError(null);
+              setIsComposerOpen(true);
+            }}
+            type="button"
+          >
+            Añadir platillos
+          </button>
+
+          <button
+            className={styles.signOutButton}
+            disabled={isSigningOut}
+            onClick={handleSignOut}
+            type="button"
+          >
+            {isSigningOut ? "Saliendo..." : "Cerrar sesión"}
+          </button>
+        </div>
+      </div>
+
+      {error ? <p className={styles.errorBanner}>{error}</p> : null}
+
+      {isComposerOpen ? (
+        <section className={styles.composer}>
+          <div className={styles.composerHeader}>
+            <div>
+              <p className={styles.sectionLabel}>Nuevo platillo</p>
+              <h2 className={styles.sectionTitle}>Añadir a la carta</h2>
+            </div>
+
+            <button
+              className={styles.dismissButton}
+              onClick={() => {
+                setIsComposerOpen(false);
+                setError(null);
+              }}
+              type="button"
+            >
+              Cerrar
+            </button>
+          </div>
+
+          <label className={styles.field}>
+            <span>Nombre</span>
+            <input
+              onChange={(event) => setName(event.target.value)}
+              placeholder="Ej. Ravioles de ricotta ahumada"
+              value={name}
+            />
+          </label>
+
+          <label className={styles.field}>
+            <span>Descripción</span>
+            <textarea
+              onChange={(event) => setDescription(event.target.value)}
+              placeholder="Describe el plato con un tono editorial y apetitoso."
+              rows={4}
+              value={description}
+            />
+          </label>
+
+          <button
+            className={styles.saveButton}
+            disabled={isSavingDish}
+            onClick={handleCreateDish}
+            type="button"
+          >
+            {isSavingDish ? "Guardando..." : "Guardar platillo"}
+          </button>
+        </section>
+      ) : null}
+
+      <div className={styles.menuPaper}>
+        <div className={styles.menuHeader}>
+          <span className={styles.menuWord}>Menu</span>
+          <p className={styles.menuLead}>
+            Una carta viva conectada con Firestore para editar platillos sin
+            tocar código.
+          </p>
+        </div>
+
+        {dishes.length ? (
+          <div className={styles.menuList}>
+            {dishes.map((dish, index) => (
+              <article className={styles.menuItem} key={dish.id}>
+                <div className={styles.menuItemHeader}>
+                  <span className={styles.menuIndex}>
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <h2 className={styles.dishName}>{dish.name}</h2>
+                </div>
+                <p className={styles.dishDescription}>{dish.description}</p>
+              </article>
+            ))}
+          </div>
+        ) : (
+          <div className={styles.emptyState}>
+            <p className={styles.sectionLabel}>Carta vacía</p>
+            <h2 className={styles.sectionTitle}>Tu menú todavía no tiene platillos.</h2>
+            <p className={styles.emptyHint}>
+              Usa el botón <strong>Añadir platillos</strong> para crear el primer
+              elemento y verlo aparecer en esta carta.
+            </p>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}

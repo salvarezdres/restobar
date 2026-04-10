@@ -1,142 +1,227 @@
 .page {
-  --background: #fafafa;
-  --foreground: #fff;
-
-  --text-primary: #000;
-  --text-secondary: #666;
-
-  --button-primary-hover: #383838;
-  --button-secondary-hover: #f2f2f2;
-  --button-secondary-border: #ebebeb;
-
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-family: Arial, Helvetica, sans-serif;
-  background-color: var(--background);
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background:
+    radial-gradient(circle at top left, rgba(255, 205, 124, 0.55), transparent 28%),
+    radial-gradient(circle at bottom right, rgba(255, 255, 255, 0.6), transparent 24%),
+    linear-gradient(180deg, #f9f4ea 0%, #eadac3 100%);
 }
 
 .main {
-  display: flex;
-  flex: 1;
-  width: 100%;
-  max-width: 800px;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: space-between;
-  background-color: var(--foreground);
-  padding: 120px 60px;
-}
-
-.intro {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  text-align: left;
-  gap: 24px;
-}
-
-.intro h1 {
-  max-width: 320px;
-  font-size: 40px;
-  font-weight: 600;
-  line-height: 48px;
-  letter-spacing: -2.4px;
-  text-wrap: balance;
-  color: var(--text-primary);
-}
-
-.intro p {
-  max-width: 440px;
-  font-size: 18px;
-  line-height: 32px;
-  text-wrap: balance;
-  color: var(--text-secondary);
-}
-
-.intro a {
-  font-weight: 500;
-  color: var(--text-primary);
-}
-
-.ctas {
-  display: flex;
-  flex-direction: row;
   width: 100%;
   max-width: 440px;
-  gap: 16px;
-  font-size: 14px;
 }
 
-.ctas a {
+.authShell {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.brand {
+  display: flex;
   align-items: center;
-  height: 40px;
-  padding: 0 16px;
-  border-radius: 128px;
-  border: 1px solid transparent;
-  transition: 0.2s;
-  cursor: pointer;
-  width: fit-content;
-  font-weight: 500;
+  gap: 12px;
+  padding-left: 8px;
+  color: #6b5442;
+  font-size: 0.95rem;
 }
 
-a.primary {
-  background: var(--text-primary);
-  color: var(--background);
+.brandMark {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #2f1f18, #7a5537);
+  color: #fff3df;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.loginCard {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 28px;
+  border: 1px solid rgba(88, 67, 48, 0.1);
+  border-radius: 28px;
+  background: rgba(255, 251, 245, 0.92);
+  box-shadow: 0 24px 60px rgba(76, 52, 33, 0.14);
+}
+
+.googleHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #444746;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 1.05rem;
+}
+
+.googleDot {
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: #ffffff;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+  color: #4285f4;
+  font-weight: 700;
+}
+
+.heroCopy {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.eyebrow {
+  color: #8f6548;
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.heroCopy h1 {
+  color: #24150d;
+  font-size: clamp(2.1rem, 7vw, 3.4rem);
+  line-height: 0.94;
+  letter-spacing: -0.06em;
+}
+
+.heroCopy p {
+  color: #6a5546;
+  line-height: 1.65;
+  font-size: 1rem;
+}
+
+.accountCard {
+  display: flex;
+  flex-direction: column;
   gap: 8px;
+  padding: 16px 18px;
+  border-radius: 20px;
+  background: #f7f3ee;
+  border: 1px solid rgba(60, 46, 36, 0.08);
 }
 
-a.secondary {
-  border-color: var(--button-secondary-border);
+.accountLabel {
+  color: #857565;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.8rem;
 }
 
-/* Enable hover only on non-touch devices */
+.accountValue {
+  color: #2a1e17;
+  font-size: 1.1rem;
+}
+
+.accountHint {
+  color: #75685c;
+  line-height: 1.5;
+  font-size: 0.95rem;
+}
+
+.actions {
+  display: flex;
+  gap: 14px;
+}
+
+.googleButton,
+.secondaryButton {
+  min-height: 54px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 0 18px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  font: inherit;
+  font-size: 0.98rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    transform 120ms ease,
+    box-shadow 120ms ease,
+    background-color 120ms ease,
+    opacity 120ms ease;
+}
+
+.googleButton {
+  background: #ffffff;
+  color: #1f1f1f;
+  border-color: rgba(34, 34, 34, 0.1);
+  box-shadow: 0 10px 24px rgba(31, 31, 31, 0.08);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.googleButton:disabled,
+.secondaryButton:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.googleBadge {
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background:
+    conic-gradient(#4285f4 0 25%, #34a853 25% 50%, #fbbc05 50% 75%, #ea4335 75% 100%);
+  color: #ffffff;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.secondaryButton {
+  background: transparent;
+  color: #5e4537;
+  border-color: rgba(95, 70, 52, 0.16);
+}
+
+.errorBanner {
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: rgba(176, 61, 44, 0.12);
+  color: #8d311f;
+  line-height: 1.5;
+}
+
+.footnote {
+  color: #816554;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
 @media (hover: hover) and (pointer: fine) {
-  a.primary:hover {
-    background: var(--button-primary-hover);
-    border-color: transparent;
+  .googleButton:hover,
+  .secondaryButton:hover {
+    transform: translateY(-1px);
   }
 
-  a.secondary:hover {
-    background: var(--button-secondary-hover);
-    border-color: transparent;
-  }
-}
-
-@media (max-width: 600px) {
-  .main {
-    padding: 48px 24px;
-  }
-
-  .intro {
-    gap: 16px;
-  }
-
-  .intro h1 {
-    font-size: 32px;
-    line-height: 40px;
-    letter-spacing: -1.92px;
+  .secondaryButton:hover {
+    background: rgba(95, 70, 52, 0.04);
   }
 }
 
-@media (prefers-color-scheme: dark) {
-  .logo {
-    filter: invert();
+@media (max-width: 640px) {
+  .loginCard {
+    padding: 24px;
+    border-radius: 24px;
   }
 
-  .page {
-    --background: #000;
-    --foreground: #000;
+  .actions {
+    display: grid;
+  }
 
-    --text-primary: #ededed;
-    --text-secondary: #999;
-
-    --button-primary-hover: #ccc;
-    --button-secondary-hover: #1a1a1a;
-    --button-secondary-border: #1a1a1a;
+  .heroCopy h1 {
+    max-width: 10ch;
   }
 }
