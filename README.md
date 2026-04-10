@@ -17,11 +17,11 @@ Archivos principales:
 - `src/lib/firebase.ts`
 - `src/lib/firestore.ts`
 
-## Deploy con Bitbucket Pipelines
+## Deploy con GitHub Actions
 
-El pipeline solo corre cuando hay commits en la rama `master`.
+El workflow corre cuando hay commits en la rama `master`.
 
-Antes de hacer push, crea esta variable en Bitbucket Repository settings > Pipelines > Repository variables:
+Antes de hacer push, crea este secreto en GitHub en Settings > Secrets and variables > Actions:
 
 ```bash
 FIREBASE_TOKEN
@@ -35,6 +35,6 @@ firebase login:ci
 
 Archivos relevantes para deploy:
 
-- `bitbucket-pipelines.yml`
+- `.github/workflows/deploy.yml`
 - `firebase.json`
 - `.firebaserc`
