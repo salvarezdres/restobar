@@ -46,7 +46,7 @@ Cada platillo guarda:
 
 El workflow corre cuando hay commits en la rama `master`.
 
-Antes de hacer push, crea este secreto en GitHub en Settings > Secrets and variables > Actions:
+Antes de hacer push, crea estos valores en GitHub en Settings > Secrets and variables > Actions. Puedes usar `Repository variables` o `Secrets`, pero deben existir con estos nombres:
 
 ```bash
 FIREBASE_TOKEN
