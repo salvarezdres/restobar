@@ -39,6 +39,20 @@
   gap: 6px;
 }
 
+.navSection {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 18px;
+}
+
+.navSectionTitle {
+  padding: 0 8px;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
 .navLink {
   display: flex;
   align-items: center;
@@ -85,6 +99,8 @@
   background: transparent;
   color: var(--foreground);
   cursor: pointer;
+  text-align: center;
+  text-decoration: none;
 }
 
 .content {
@@ -128,6 +144,12 @@
   gap: 18px;
 }
 
+.workspaceGridWide {
+  display: grid;
+  grid-template-columns: minmax(320px, 420px) minmax(0, 1fr);
+  gap: 18px;
+}
+
 .panel,
 .summaryCard,
 .tableCard,
@@ -148,6 +170,12 @@
 
 .formGrid {
   display: grid;
+  gap: 14px;
+}
+
+.formColumns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px;
 }
 
@@ -315,6 +343,40 @@
   background: var(--background-soft);
 }
 
+.tableHeadFive,
+.tableRowFive {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) repeat(4, minmax(90px, 1fr));
+  gap: 10px;
+  align-items: center;
+}
+
+.tableHeadFive {
+  padding: 0 6px;
+  color: var(--muted);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.tableRowFive {
+  padding: 12px;
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  background: var(--background-soft);
+}
+
+.tableRowCompact {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 14px;
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  background: var(--background-soft);
+}
+
 .summaryGrid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -360,6 +422,10 @@
     grid-template-columns: 1fr;
   }
 
+  .workspaceGridWide {
+    grid-template-columns: 1fr;
+  }
+
   .summaryGrid {
     grid-template-columns: 1fr;
   }
@@ -373,9 +439,12 @@
 
   .tableHead,
   .tableRow,
+  .tableHeadFive,
+  .tableRowFive,
   .ingredientGrid,
   .menuRecipeGrid,
-  .spreadsheetRow {
+  .spreadsheetRow,
+  .formColumns {
     grid-template-columns: 1fr;
   }
 }

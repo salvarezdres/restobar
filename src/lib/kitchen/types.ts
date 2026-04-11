@@ -60,8 +60,26 @@ export type Employee = {
   id: string;
   ownerId: string;
   name: string;
+  email?: string;
   role: EmployeeRole;
   salary: number;
+  createdAt?: string;
+  updatedAt?: string;
+};
+
+export type ScheduleEvent = {
+  id: string;
+  ownerId: string;
+  title: string;
+  collaboratorIds: string[];
+  collaboratorNames: string[];
+  collaboratorEmails: string[];
+  date: string;
+  startTime: string;
+  endTime: string;
+  notes: string;
+  googleCalendarEventId?: string;
+  googleCalendarLink?: string;
   createdAt?: string;
   updatedAt?: string;
 };

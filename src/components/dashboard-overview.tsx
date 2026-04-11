@@ -103,6 +103,12 @@ export default function DashboardOverview() {
             <Link className={styles.secondaryButton} href="/employees">
               Agregar empleado
             </Link>
+            <Link className={styles.secondaryButton} href="/payroll">
+              Liquidaciones
+            </Link>
+            <Link className={styles.secondaryButton} href="/margin">
+              Ver margen
+            </Link>
           </div>
         </section>
       </div>

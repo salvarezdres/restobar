@@ -9,12 +9,35 @@ import { useFirebaseSession } from "@/hooks/use-firebase-session";
 import { useGsapReveal } from "@/hooks/use-gsap-reveal";
 import { getFirebaseAuth } from "@/lib/auth";
 
-const NAV_ITEMS = [
-  { href: "/dashboard", label: "Dashboard" },
-  { href: "/recipes", label: "Recetas" },
-  { href: "/menus", label: "Menus" },
-  { href: "/costs", label: "Costos" },
-  { href: "/employees", label: "Empleados" },
+const NAV_GROUPS = [
+  {
+    title: "General",
+    items: [{ href: "/dashboard", label: "Dashboard" }],
+  },
+  {
+    title: "Cocina",
+    items: [
+      { href: "/recipes", label: "Recetas" },
+      { href: "/menus", label: "Menus" },
+      { href: "/costs", label: "Costos" },
+    ],
+  },
+  {
+    title: "Equipo",
+    items: [
+      { href: "/employees", label: "Empleados" },
+      { href: "/payroll", label: "Liquidaciones" },
+      { href: "/schedule", label: "Agenda" },
+    ],
+  },
+  {
+    title: "Finanzas",
+    items: [
+      { href: "/operations", label: "Operacion" },
+      { href: "/margin", label: "Margen" },
+      { href: "/projections", label: "Proyecciones" },
+    ],
+  },
 ] as const;
 
 export default function AppShell({
@@ -71,16 +94,21 @@ export default function AppShell({
           </div>
 
           <nav className={styles.nav}>
-            {NAV_ITEMS.map((item) => (
-              <Link
-                className={`${styles.navLink} ${
-                  pathname === item.href ? styles.navLinkActive : ""
-                }`}
-                href={item.href}
-                key={item.href}
-              >
-                {item.label}
-              </Link>
+            {NAV_GROUPS.map((group) => (
+              <div className={styles.navSection} key={group.title}>
+                <span className={styles.navSectionTitle}>{group.title}</span>
+                {group.items.map((item) => (
+                  <Link
+                    className={`${styles.navLink} ${
+                      pathname === item.href ? styles.navLinkActive : ""
+                    }`}
+                    href={item.href}
+                    key={item.href}
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
             ))}
           </nav>
 

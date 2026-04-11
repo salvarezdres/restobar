@@ -29,6 +29,10 @@ export function getFirebaseAuth() {
 }
 
 export function getGoogleProvider() {
+  return createGoogleProvider();
+}
+
+export function createGoogleProvider(scopes: string[] = []) {
   if (!googleProviderInstance) {
     googleProviderInstance = new GoogleAuthProvider();
     googleProviderInstance.setCustomParameters({
@@ -36,5 +40,11 @@ export function getGoogleProvider() {
     });
   }
 
-  return googleProviderInstance;
+  const provider = googleProviderInstance;
+
+  scopes.forEach((scope) => {
+    provider.addScope(scope);
+  });
+
+  return provider;
 }

@@ -7,6 +7,7 @@ import type {
   Employee,
   Menu,
   Recipe,
+  ScheduleEvent,
 } from "@/lib/kitchen/types";
 import { normalizeName } from "@/lib/kitchen/units";
 import {
@@ -21,6 +22,12 @@ import {
   listEmployees,
   updateEmployee,
 } from "@/lib/services/employees";
+import {
+  createScheduleEvent,
+  deleteScheduleEvent,
+  listScheduleEvents,
+  updateScheduleEvent,
+} from "@/lib/services/schedule-events";
 import { createMenu, deleteMenu, listMenus, updateMenu } from "@/lib/services/menus";
 import {
   createRecipe,
@@ -62,6 +69,14 @@ export function useEmployees(ownerId: string | undefined) {
     enabled: Boolean(ownerId),
     queryKey: ["workspace", ownerId, "employees"],
     queryFn: () => listEmployees(ownerId as string),
+  });
+}
+
+export function useScheduleEvents(ownerId: string | undefined) {
+  return useQuery({
+    enabled: Boolean(ownerId),
+    queryKey: ["workspace", ownerId, "schedule"],
+    queryFn: () => listScheduleEvents(ownerId as string),
   });
 }
 
@@ -203,6 +218,7 @@ export function useSaveEmployee(ownerId: string | undefined) {
     mutationFn: async (input: Employee) => {
       const payload = {
         name: input.name,
+        email: input.email,
         role: input.role,
         salary: input.salary,
       };
@@ -230,6 +246,55 @@ export function useDeleteEmployee(ownerId: string | undefined) {
 
   return useMutation({
     mutationFn: deleteEmployee,
+    onSuccess: () => {
+      if (ownerId) {
+        invalidateWorkspace(queryClient, ownerId);
+      }
+    },
+  });
+}
+
+export function useSaveScheduleEvent(ownerId: string | undefined) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (input: ScheduleEvent) => {
+      const payload = {
+        title: input.title,
+        collaboratorIds: input.collaboratorIds,
+        collaboratorNames: input.collaboratorNames,
+        collaboratorEmails: input.collaboratorEmails,
+        date: input.date,
+        startTime: input.startTime,
+        endTime: input.endTime,
+        notes: input.notes,
+        googleCalendarEventId: input.googleCalendarEventId,
+        googleCalendarLink: input.googleCalendarLink,
+      };
+
+      if (input.id) {
+        await updateScheduleEvent(input.id, payload);
+        return;
+      }
+
+      await createScheduleEvent({
+        ownerId: ownerId as string,
+        ...payload,
+      });
+    },
+    onSuccess: () => {
+      if (ownerId) {
+        invalidateWorkspace(queryClient, ownerId);
+      }
+    },
+  });
+}
+
+export function useDeleteScheduleEvent(ownerId: string | undefined) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: deleteScheduleEvent,
     onSuccess: () => {
       if (ownerId) {
         invalidateWorkspace(queryClient, ownerId);

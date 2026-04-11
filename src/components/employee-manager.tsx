@@ -23,6 +23,7 @@ function createEmptyEmployee(ownerId: string): Employee {
     id: "",
     ownerId,
     name: "",
+    email: "",
     role: "chef",
     salary: 0,
   };
@@ -97,6 +98,21 @@ export default function EmployeeManager() {
           </label>
 
           <label className={styles.field}>
+            <span className={styles.fieldLabel}>Email</span>
+            <input
+              className={styles.input}
+              onChange={(event) =>
+                setDraft((currentDraft) => ({
+                  ...currentDraft,
+                  email: event.target.value,
+                }))
+              }
+              type="email"
+              value={draft.email ?? ""}
+            />
+          </label>
+
+          <label className={styles.field}>
             <span className={styles.fieldLabel}>Sueldo</span>
             <input
               className={styles.input}
@@ -160,6 +176,9 @@ export default function EmployeeManager() {
                     <p className={styles.cardMeta}>
                       {employee.role} · ${employee.salary.toFixed(2)}
                     </p>
+                    {employee.email ? (
+                      <p className={styles.cardMeta}>{employee.email}</p>
+                    ) : null}
                   </div>
                   <div className={styles.buttonRow}>
                     <button
