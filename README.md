@@ -1,6 +1,6 @@
 # Menu Creator
 
-Proyecto Next.js configurado para export estático, despliegue automático a Firebase Hosting y edición de menú desde Firestore.
+Aplicacion para gestionar la carta digital de un restaurante.
 
 ## Desarrollo local
 
@@ -8,7 +8,7 @@ Proyecto Next.js configurado para export estático, despliegue automático a Fir
 npm run dev
 ```
 
-## Firebase en cliente
+## Configuracion del cliente
 
 Las credenciales web viven en `.env.local`.
 
@@ -21,19 +21,19 @@ Archivos principales:
 - `src/components/google-auth-card.tsx`
 - `src/components/dashboard-shell.tsx`
 
-## Google Sign-In
+## Acceso
 
-Para que el login funcione, habilita Google como proveedor en Firebase Console:
+Para que el inicio de sesion funcione, habilita el proveedor de acceso configurado en tu consola:
 
-1. Authentication > Sign-in method
-2. Activa `Google`
+1. Sign-in method
+2. Activa el proveedor correspondiente
 3. Define un correo de soporte del proyecto
 
-El frontend usa `signInWithPopup`, asi que el dominio de Firebase Hosting o `localhost` debe estar autorizado en Authentication > Settings > Authorized domains.
+El acceso usa ventana emergente, asi que el dominio del proyecto o `localhost` debe estar autorizado.
 
-## Menú
+## Menu
 
-El dashboard lee y crea documentos en la colección `dishes` de Firestore.
+El dashboard lee y crea documentos en la coleccion `dishes`.
 
 Cada platillo guarda:
 
@@ -46,7 +46,8 @@ Cada platillo guarda:
 
 El workflow corre cuando hay commits en la rama `master`.
 
-Antes de hacer push, crea estos valores en GitHub en Settings > Secrets and variables > Actions. Puedes usar `Repository variables` o `Secrets`, pero deben existir con estos nombres:
+Antes de hacer push, crea estos valores en GitHub en `Settings > Secrets and variables > Actions`.
+Puedes usar `Repository variables` o `Secrets`, pero deben existir con estos nombres:
 
 ```bash
 FIREBASE_TOKEN
@@ -58,13 +59,13 @@ NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
 NEXT_PUBLIC_FIREBASE_APP_ID
 ```
 
-Puedes obtenerla con la CLI de Firebase:
+Puedes obtener el token con la CLI correspondiente:
 
 ```bash
 firebase login:ci
 ```
 
-Las variables `NEXT_PUBLIC_FIREBASE_*` deben copiar la configuración web de Firebase para que GitHub Actions pueda compilar el sitio y para que el frontend exportado funcione bien en producción.
+Las variables `NEXT_PUBLIC_FIREBASE_*` deben copiar la configuracion web del proyecto para que GitHub Actions pueda compilar el sitio y para que el frontend exportado funcione bien en produccion.
 
 Archivos relevantes para deploy:
 

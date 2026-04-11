@@ -13,7 +13,7 @@ let googleProviderInstance: GoogleAuthProvider | null = null;
 
 function ensureBrowser() {
   if (typeof window === "undefined") {
-    throw new Error("Firebase Auth solo puede inicializarse en el navegador.");
+    throw new Error("El modulo de acceso solo puede inicializarse en el navegador.");
   }
 }
 

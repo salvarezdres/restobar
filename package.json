@@ -10,7 +10,9 @@
     "deploy:hosting": "firebase deploy --only hosting --project scrum-poket-453df"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.98.0",
     "firebase": "^12.12.0",
+    "gsap": "^3.14.2",
     "next": "16.2.3",
     "react": "19.2.4",
     "react-dom": "19.2.4"

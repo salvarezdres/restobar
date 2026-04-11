@@ -18,4 +18,3 @@ function createFirebaseApp(): FirebaseApp {
 }
 
 export const firebaseApp = createFirebaseApp();
-export const firebaseProjectId = firebaseConfig.projectId;

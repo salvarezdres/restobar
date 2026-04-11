@@ -1,12 +1,13 @@
-import DashboardShell from "@/components/dashboard-shell";
-import styles from "./dashboard.module.css";
+import AppShell from "@/components/app-shell";
+import DashboardOverview from "@/components/dashboard-overview";
 
 export default function DashboardPage() {
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <DashboardShell />
-      </main>
-    </div>
+    <AppShell
+      description="Resumen del sistema, estado de los modulos y accesos principales."
+      title="Dashboard"
+    >
+      <DashboardOverview />
+    </AppShell>
   );
 }
