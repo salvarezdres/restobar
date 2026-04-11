@@ -73,11 +73,13 @@ export async function createCollectionDocument<T extends DocumentData>(
   collectionName: string,
   payload: T,
 ) {
-  await addDoc(collection(db, collectionName), {
+  const documentReference = await addDoc(collection(db, collectionName), {
     ...payload,
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
   });
+
+  return documentReference.id;
 }
 
 export async function updateCollectionDocument<T extends DocumentData>(

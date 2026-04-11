@@ -3,13 +3,13 @@
 import { useMemo, useState } from "react";
 
 import styles from "@/components/workspace.module.css";
+import { useWorkspaceSession } from "@/components/workspace-session-provider";
 import {
   useDeleteScheduleEvent,
   useEmployees,
   useSaveScheduleEvent,
   useScheduleEvents,
 } from "@/hooks/use-kitchen-queries";
-import { useFirebaseSession } from "@/hooks/use-firebase-session";
 import { createGoogleCalendarEvent } from "@/lib/google-calendar";
 import type { ScheduleEvent } from "@/lib/kitchen/types";
 
@@ -33,13 +33,13 @@ function createEmptySchedule(ownerId: string): ScheduleEvent {
 }
 
 export default function ScheduleManager() {
-  const { user } = useFirebaseSession();
-  const ownerId = user?.uid ?? "";
-  const employeesQuery = useEmployees(user?.uid);
-  const scheduleQuery = useScheduleEvents(user?.uid);
-  const saveScheduleEvent = useSaveScheduleEvent(user?.uid);
-  const deleteScheduleEvent = useDeleteScheduleEvent(user?.uid);
-  const [draft, setDraft] = useState<ScheduleEvent>(createEmptySchedule(ownerId));
+  const { ownerId } = useWorkspaceSession();
+  const stableOwnerId = ownerId ?? "";
+  const employeesQuery = useEmployees(ownerId);
+  const scheduleQuery = useScheduleEvents(ownerId);
+  const saveScheduleEvent = useSaveScheduleEvent(ownerId);
+  const deleteScheduleEvent = useDeleteScheduleEvent(ownerId);
+  const [draft, setDraft] = useState<ScheduleEvent>(createEmptySchedule(stableOwnerId));
   const [error, setError] = useState<string | null>(null);
   const [isCreatingCalendarEvent, setIsCreatingCalendarEvent] = useState(false);
 
@@ -79,7 +79,7 @@ export default function ScheduleManager() {
   };
 
   const resetDraft = () => {
-    setDraft(createEmptySchedule(ownerId));
+    setDraft(createEmptySchedule(stableOwnerId));
     setError(null);
   };
 
@@ -127,7 +127,7 @@ export default function ScheduleManager() {
 
     await saveScheduleEvent.mutateAsync({
       ...draft,
-      ownerId,
+      ownerId: stableOwnerId,
       title: draft.title.trim(),
       notes: draft.notes.trim(),
       googleCalendarEventId,

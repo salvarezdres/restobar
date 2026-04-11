@@ -20,7 +20,7 @@ export async function listEmployees(ownerId: string) {
 export async function createEmployee(
   employee: Omit<Employee, "id" | "createdAt" | "updatedAt">,
 ) {
-  await createCollectionDocument(COLLECTION_NAME, employee);
+  return createCollectionDocument(COLLECTION_NAME, employee);
 }
 
 export async function updateEmployee(

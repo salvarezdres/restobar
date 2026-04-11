@@ -56,6 +56,41 @@ export type CostCatalogItem = {
 
 export type EmployeeRole = "chef" | "ayudante" | "garzon" | "administracion";
 
+export type LegalRiskLevel =
+  | "OK"
+  | "RIESGO BAJO"
+  | "RIESGO MEDIO"
+  | "RIESGO ALTO"
+  | "INCUMPLIMIENTO GRAVE";
+
+export type LegalCheckType =
+  | "contract"
+  | "cotizaciones"
+  | "jornada"
+  | "seguridad";
+
+export type LegalCheckStatus =
+  | "ok"
+  | "warning"
+  | "risk"
+  | "critical"
+  | "severe";
+
+export type LegalAlertSeverity = "preventiva" | "riesgo" | "critica";
+
+export type EmployeeLegalProfile = {
+  employmentStartDate: string;
+  contractSignedDate?: string;
+  contractType?: "indefinido" | "plazo-fijo" | "por-obra";
+  lastContributionPaidMonth?: string;
+  weeklyHours: number;
+  dailyWorkingHours: number;
+  breakMinutes: number;
+  overtimeHoursPerDay: number;
+  isMutualAffiliated: boolean;
+  mutualName?: string;
+};
+
 export type Employee = {
   id: string;
   ownerId: string;
@@ -63,8 +98,53 @@ export type Employee = {
   email?: string;
   role: EmployeeRole;
   salary: number;
+  legalProfile: EmployeeLegalProfile;
   createdAt?: string;
   updatedAt?: string;
+};
+
+export type LegalAlert = {
+  id: string;
+  employeeId: string;
+  severity: LegalAlertSeverity;
+  title: string;
+  description: string;
+  dueDate?: string;
+  checkType: LegalCheckType;
+};
+
+export type LegalTimelineEvent = {
+  dayOffset: number;
+  label: string;
+  riskLevel: LegalRiskLevel;
+  description: string;
+};
+
+export type LegalCheck = {
+  id: string;
+  ownerId: string;
+  employeeId: string;
+  employeeName: string;
+  checkType: LegalCheckType;
+  status: LegalCheckStatus;
+  riskLevel: LegalRiskLevel;
+  summary: string;
+  alerts: LegalAlert[];
+  lastEvaluationDate: string;
+  nextEvaluationDate: string;
+  createdAt?: string;
+  updatedAt?: string;
+};
+
+export type EmployeeLegalEvaluation = {
+  employeeId: string;
+  employeeName: string;
+  overallRisk: LegalRiskLevel;
+  completionScore: number;
+  legalState: LegalRiskLevel;
+  checks: LegalCheck[];
+  alerts: LegalAlert[];
+  timeline: LegalTimelineEvent[];
 };
 
 export type ScheduleEvent = {

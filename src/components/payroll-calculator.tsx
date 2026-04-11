@@ -3,13 +3,13 @@
 import { useMemo, useState } from "react";
 
 import styles from "@/components/workspace.module.css";
+import { useWorkspaceSession } from "@/components/workspace-session-provider";
 import { useEmployees } from "@/hooks/use-kitchen-queries";
-import { useFirebaseSession } from "@/hooks/use-firebase-session";
 import { calculatePayrollTotals } from "@/lib/kitchen/finance";
 
 export default function PayrollCalculator() {
-  const { user } = useFirebaseSession();
-  const employeesQuery = useEmployees(user?.uid);
+  const { ownerId } = useWorkspaceSession();
+  const employeesQuery = useEmployees(ownerId);
   const [legalBurdenRate, setLegalBurdenRate] = useState(0.24);
   const [bonusRate, setBonusRate] = useState(0.1);
 

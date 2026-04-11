@@ -2,13 +2,8 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import type {
-  CostCatalogItem,
-  Employee,
-  Menu,
-  Recipe,
-  ScheduleEvent,
-} from "@/lib/kitchen/types";
+import type { CostCatalogItem, Employee, Menu, Recipe, ScheduleEvent } from "@/lib/kitchen/types";
+import { buildComplianceOverview } from "@/lib/legal-compliance";
 import { normalizeName } from "@/lib/kitchen/units";
 import {
   createCostItem,
@@ -22,6 +17,11 @@ import {
   listEmployees,
   updateEmployee,
 } from "@/lib/services/employees";
+import {
+  deleteEmployeeLegalChecks,
+  listLegalChecks,
+  syncEmployeeLegalChecks,
+} from "@/lib/services/legal-checks";
 import {
   createScheduleEvent,
   deleteScheduleEvent,
@@ -79,6 +79,23 @@ export function useScheduleEvents(ownerId: string | undefined) {
     queryKey: ["workspace", ownerId, "schedule"],
     queryFn: () => listScheduleEvents(ownerId as string),
   });
+}
+
+export function useLegalChecks(ownerId: string | undefined) {
+  return useQuery({
+    enabled: Boolean(ownerId),
+    queryKey: ["workspace", ownerId, "legal-checks"],
+    queryFn: () => listLegalChecks(ownerId as string),
+  });
+}
+
+export function useComplianceOverview(ownerId: string | undefined) {
+  const employeesQuery = useEmployees(ownerId);
+
+  return {
+    ...employeesQuery,
+    data: buildComplianceOverview(employeesQuery.data ?? []),
+  };
 }
 
 export function useSessionAuditUsers(enabled: boolean) {
@@ -230,21 +247,35 @@ export function useSaveEmployee(ownerId: string | undefined) {
         email: input.email,
         role: input.role,
         salary: input.salary,
+        legalProfile: input.legalProfile,
       };
 
       if (input.id) {
         await updateEmployee(input.id, payload);
+        await syncEmployeeLegalChecks({
+          ...input,
+          ownerId: ownerId as string,
+        });
         return;
       }
 
-      await createEmployee({
+      const createdEmployeeId = await createEmployee({
         ownerId: ownerId as string,
         ...payload,
+      });
+
+      await syncEmployeeLegalChecks({
+        ...input,
+        id: createdEmployeeId,
+        ownerId: ownerId as string,
       });
     },
     onSuccess: () => {
       if (ownerId) {
         invalidateWorkspace(queryClient, ownerId);
+        void queryClient.invalidateQueries({
+          queryKey: ["workspace", ownerId, "legal-checks"],
+        });
       }
     },
   });
@@ -254,10 +285,19 @@ export function useDeleteEmployee(ownerId: string | undefined) {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: deleteEmployee,
+    mutationFn: async (employeeId: string) => {
+      await deleteEmployee(employeeId);
+
+      if (ownerId) {
+        await deleteEmployeeLegalChecks(ownerId, employeeId);
+      }
+    },
     onSuccess: () => {
       if (ownerId) {
         invalidateWorkspace(queryClient, ownerId);
+        void queryClient.invalidateQueries({
+          queryKey: ["workspace", ownerId, "legal-checks"],
+        });
       }
     },
   });

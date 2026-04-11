@@ -3,16 +3,16 @@
 import { useMemo, useState } from "react";
 
 import styles from "@/components/workspace.module.css";
+import { useWorkspaceSession } from "@/components/workspace-session-provider";
 import { useEmployees } from "@/hooks/use-kitchen-queries";
-import { useFirebaseSession } from "@/hooks/use-firebase-session";
 import {
   calculatePayrollTotals,
   calculateSalesProjection,
 } from "@/lib/kitchen/finance";
 
 export default function SalesProjectionCalculator() {
-  const { user } = useFirebaseSession();
-  const employeesQuery = useEmployees(user?.uid);
+  const { ownerId } = useWorkspaceSession();
+  const employeesQuery = useEmployees(ownerId);
   const [averageTicket, setAverageTicket] = useState(0);
   const [coversPerDay, setCoversPerDay] = useState(0);
   const [openDaysPerMonth, setOpenDaysPerMonth] = useState(26);

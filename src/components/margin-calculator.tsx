@@ -3,24 +3,24 @@
 import { useMemo, useState } from "react";
 
 import styles from "@/components/workspace.module.css";
+import { useWorkspaceSession } from "@/components/workspace-session-provider";
 import {
   useCostCatalog,
   useEmployees,
   useMenus,
   useRecipes,
 } from "@/hooks/use-kitchen-queries";
-import { useFirebaseSession } from "@/hooks/use-firebase-session";
 import {
   calculateMenuMargin,
   calculatePayrollTotals,
 } from "@/lib/kitchen/finance";
 
 export default function MarginCalculator() {
-  const { user } = useFirebaseSession();
-  const menusQuery = useMenus(user?.uid);
-  const recipesQuery = useRecipes(user?.uid);
-  const costsQuery = useCostCatalog(user?.uid);
-  const employeesQuery = useEmployees(user?.uid);
+  const { ownerId } = useWorkspaceSession();
+  const menusQuery = useMenus(ownerId);
+  const recipesQuery = useRecipes(ownerId);
+  const costsQuery = useCostCatalog(ownerId);
+  const employeesQuery = useEmployees(ownerId);
   const [selectedMenuId, setSelectedMenuId] = useState("");
   const [sellingPricePerService, setSellingPricePerService] = useState(0);
   const [legalBurdenRate] = useState(0.24);

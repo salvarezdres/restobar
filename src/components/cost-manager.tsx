@@ -3,12 +3,12 @@
 import { useState } from "react";
 
 import styles from "@/components/workspace.module.css";
+import { useWorkspaceSession } from "@/components/workspace-session-provider";
 import {
   useCostCatalog,
   useDeleteCostItem,
   useSaveCostItem,
 } from "@/hooks/use-kitchen-queries";
-import { useFirebaseSession } from "@/hooks/use-firebase-session";
 import type { CostCatalogItem, IngredientUnit } from "@/lib/kitchen/types";
 
 const UNIT_OPTIONS: IngredientUnit[] = ["g", "kg", "ml", "l", "unit", "tbsp", "tsp"];
@@ -25,12 +25,12 @@ function createEmptyCost(ownerId: string): CostCatalogItem {
 }
 
 export default function CostManager() {
-  const { user } = useFirebaseSession();
-  const ownerId = user?.uid ?? "";
-  const costsQuery = useCostCatalog(user?.uid);
-  const saveCost = useSaveCostItem(user?.uid);
-  const deleteCost = useDeleteCostItem(user?.uid);
-  const [draft, setDraft] = useState<CostCatalogItem>(createEmptyCost(ownerId));
+  const { ownerId } = useWorkspaceSession();
+  const stableOwnerId = ownerId ?? "";
+  const costsQuery = useCostCatalog(ownerId);
+  const saveCost = useSaveCostItem(ownerId);
+  const deleteCost = useDeleteCostItem(ownerId);
+  const [draft, setDraft] = useState<CostCatalogItem>(createEmptyCost(stableOwnerId));
   const [error, setError] = useState<string | null>(null);
 
   const handleSave = async () => {
@@ -42,10 +42,10 @@ export default function CostManager() {
     setError(null);
     await saveCost.mutateAsync({
       ...draft,
-      ownerId,
+      ownerId: stableOwnerId,
       ingredientName: draft.ingredientName.trim(),
     });
-    setDraft(createEmptyCost(ownerId));
+    setDraft(createEmptyCost(stableOwnerId));
   };
 
   return (
@@ -126,7 +126,7 @@ export default function CostManager() {
             </button>
             <button
               className={styles.secondaryButton}
-              onClick={() => setDraft(createEmptyCost(ownerId))}
+              onClick={() => setDraft(createEmptyCost(stableOwnerId))}
               type="button"
             >
               Limpiar
