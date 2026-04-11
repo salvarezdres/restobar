@@ -366,6 +366,29 @@
   background: var(--background-soft);
 }
 
+.tableHeadSix,
+.tableRowSix {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.3fr) minmax(0, 1.1fr) 140px 90px minmax(0, 1.2fr);
+  gap: 10px;
+  align-items: center;
+}
+
+.tableHeadSix {
+  padding: 0 6px;
+  color: var(--muted);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.tableRowSix {
+  padding: 12px;
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  background: var(--background-soft);
+}
+
 .tableRowCompact {
   display: flex;
   align-items: center;
@@ -375,6 +398,12 @@
   border: 1px solid var(--panel-border);
   border-radius: 12px;
   background: var(--background-soft);
+}
+
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .summaryGrid {
@@ -441,6 +470,8 @@
   .tableRow,
   .tableHeadFive,
   .tableRowFive,
+  .tableHeadSix,
+  .tableRowSix,
   .ingredientGrid,
   .menuRecipeGrid,
   .spreadsheetRow,

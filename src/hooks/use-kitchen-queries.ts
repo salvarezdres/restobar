@@ -28,6 +28,7 @@ import {
   listScheduleEvents,
   updateScheduleEvent,
 } from "@/lib/services/schedule-events";
+import { listSessionAuditUsers } from "@/lib/services/session-audit";
 import { createMenu, deleteMenu, listMenus, updateMenu } from "@/lib/services/menus";
 import {
   createRecipe,
@@ -77,6 +78,14 @@ export function useScheduleEvents(ownerId: string | undefined) {
     enabled: Boolean(ownerId),
     queryKey: ["workspace", ownerId, "schedule"],
     queryFn: () => listScheduleEvents(ownerId as string),
+  });
+}
+
+export function useSessionAuditUsers(enabled: boolean) {
+  return useQuery({
+    enabled,
+    queryKey: ["admin", "session-audit-users"],
+    queryFn: listSessionAuditUsers,
   });
 }
 

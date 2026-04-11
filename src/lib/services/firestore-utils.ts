@@ -17,6 +17,12 @@ type TimestampLike = {
   toDate?: () => Date;
 };
 
+type TimestampFields = {
+  createdAt?: unknown;
+  updatedAt?: unknown;
+  lastLoginAt?: unknown;
+};
+
 function serializeTimestamp(value: unknown) {
   if (
     typeof value === "object" &&
@@ -33,12 +39,20 @@ function serializeTimestamp(value: unknown) {
 export function mapFirestoreDoc<T extends DocumentData>(
   id: string,
   data: T,
-): T & { id: string; createdAt?: string; updatedAt?: string } {
+): T & {
+  id: string;
+  createdAt?: string;
+  updatedAt?: string;
+  lastLoginAt?: string;
+} {
+  const timestampFields = data as T & TimestampFields;
+
   return {
     ...data,
     id,
-    createdAt: serializeTimestamp(data.createdAt),
-    updatedAt: serializeTimestamp(data.updatedAt),
+    createdAt: serializeTimestamp(timestampFields.createdAt),
+    updatedAt: serializeTimestamp(timestampFields.updatedAt),
+    lastLoginAt: serializeTimestamp(timestampFields.lastLoginAt),
   };
 }
 

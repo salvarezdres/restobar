@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import styles from "@/components/workspace.module.css";
 import { useFirebaseSession } from "@/hooks/use-firebase-session";
 import { getFirebaseAuth, getGoogleProvider } from "@/lib/auth";
+import { trackUserSession } from "@/lib/services/session-audit";
 
 function mapAccessError(message: string) {
   if (message.includes("auth/popup-closed-by-user")) {
@@ -46,7 +47,8 @@ export default function AuthCard() {
     setIsLoading(true);
 
     void signInWithPopup(auth, provider)
-      .then(() => {
+      .then((result) => {
+        void trackUserSession(result.user);
         router.replace("/dashboard");
       })
       .catch((loginError: unknown) => {

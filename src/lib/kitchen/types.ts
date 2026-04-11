@@ -84,6 +84,19 @@ export type ScheduleEvent = {
   updatedAt?: string;
 };
 
+export type SessionAuditUser = {
+  id: string;
+  uid: string;
+  email: string;
+  displayName: string;
+  photoURL?: string;
+  providerIds: string[];
+  signInCount: number;
+  createdAt?: string;
+  updatedAt?: string;
+  lastLoginAt?: string;
+};
+
 export type ConsolidatedIngredient = {
   name: string;
   normalizedName: string;

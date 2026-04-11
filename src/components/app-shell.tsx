@@ -9,6 +9,8 @@ import { useFirebaseSession } from "@/hooks/use-firebase-session";
 import { useGsapReveal } from "@/hooks/use-gsap-reveal";
 import { getFirebaseAuth } from "@/lib/auth";
 
+const ADMIN_EMAIL = "seba.cornex@gmail.com";
+
 const NAV_GROUPS = [
   {
     title: "General",
@@ -84,6 +86,18 @@ export default function AppShell({
     return null;
   }
 
+  const navGroups = [
+    ...NAV_GROUPS,
+    ...(user.email === ADMIN_EMAIL
+      ? [
+          {
+            title: "Admin",
+            items: [{ href: "/admin/sessions", label: "Sesiones" }],
+          },
+        ]
+      : []),
+  ];
+
   return (
     <main className={styles.page}>
       <div className={styles.shell}>
@@ -94,7 +108,7 @@ export default function AppShell({
           </div>
 
           <nav className={styles.nav}>
-            {NAV_GROUPS.map((group) => (
+            {navGroups.map((group) => (
               <div className={styles.navSection} key={group.title}>
                 <span className={styles.navSectionTitle}>{group.title}</span>
                 {group.items.map((item) => (
