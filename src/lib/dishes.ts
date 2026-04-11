@@ -1,6 +1,8 @@
 import {
   addDoc,
   collection,
+  deleteDoc,
+  doc,
   onSnapshot,
   orderBy,
   query,
@@ -57,4 +59,8 @@ export async function createDish(input: {
     createdBy: input.createdBy,
     createdAt: serverTimestamp(),
   });
+}
+
+export async function deleteDish(dishId: string) {
+  await deleteDoc(doc(db, "dishes", dishId));
 }

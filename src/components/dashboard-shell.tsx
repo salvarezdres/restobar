@@ -6,7 +6,12 @@ import { useRouter } from "next/navigation";
 
 import styles from "@/app/dashboard/dashboard.module.css";
 import { getFirebaseAuth } from "@/lib/auth";
-import { createDish, subscribeToDishes, type Dish } from "@/lib/dishes";
+import {
+  createDish,
+  deleteDish,
+  subscribeToDishes,
+  type Dish,
+} from "@/lib/dishes";
 
 function formatName(user: User) {
   return user.displayName ?? user.email ?? "Usuario";
@@ -20,6 +25,7 @@ export default function DashboardShell() {
   const [isSigningOut, setIsSigningOut] = useState(false);
   const [isComposerOpen, setIsComposerOpen] = useState(false);
   const [isSavingDish, setIsSavingDish] = useState(false);
+  const [deletingDishId, setDeletingDishId] = useState<string | null>(null);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -98,6 +104,23 @@ export default function DashboardShell() {
       })
       .finally(() => {
         setIsSavingDish(false);
+      });
+  };
+
+  const handleDeleteDish = (dishId: string) => {
+    setError(null);
+    setDeletingDishId(dishId);
+
+    void deleteDish(dishId)
+      .catch((deleteError: unknown) => {
+        setError(
+          deleteError instanceof Error
+            ? deleteError.message
+            : "No se pudo borrar el platillo.",
+        );
+      })
+      .finally(() => {
+        setDeletingDishId(null);
       });
   };
 
@@ -215,10 +238,21 @@ export default function DashboardShell() {
             {dishes.map((dish, index) => (
               <article className={styles.menuItem} key={dish.id}>
                 <div className={styles.menuItemHeader}>
-                  <span className={styles.menuIndex}>
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
-                  <h2 className={styles.dishName}>{dish.name}</h2>
+                  <div className={styles.menuIdentity}>
+                    <span className={styles.menuIndex}>
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <h2 className={styles.dishName}>{dish.name}</h2>
+                  </div>
+
+                  <button
+                    className={styles.deleteButton}
+                    disabled={deletingDishId === dish.id}
+                    onClick={() => handleDeleteDish(dish.id)}
+                    type="button"
+                  >
+                    {deletingDishId === dish.id ? "Borrando..." : "Borrar"}
+                  </button>
                 </div>
                 <p className={styles.dishDescription}>{dish.description}</p>
               </article>
