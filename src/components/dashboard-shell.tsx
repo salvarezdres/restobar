@@ -13,10 +13,6 @@ import {
   type Dish,
 } from "@/lib/dishes";
 
-function formatName(user: User) {
-  return user.displayName ?? user.email ?? "Usuario";
-}
-
 export default function DashboardShell() {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
@@ -140,15 +136,6 @@ export default function DashboardShell() {
   return (
     <section className={styles.dashboardCard}>
       <div className={styles.header}>
-        <div className={styles.headerCopy}>
-          <p className={styles.overline}>Curated Restaurant Menu</p>
-          <h1 className={styles.stateTitle}>Dashboard editorial del menu</h1>
-          <p className={styles.subtitle}>
-            Crea una carta amplia, elegante y sobria. Sesion activa para{" "}
-            {formatName(user)}.
-          </p>
-        </div>
-
         <div className={styles.headerActions}>
           <button
             className={styles.addButton}
