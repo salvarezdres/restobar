@@ -718,6 +718,27 @@
   gap: 12px;
 }
 
+.accordionTrigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.accordionContent {
+  display: grid;
+  gap: 12px;
+  overflow: hidden;
+  animation: accordion-reveal 220ms ease;
+}
+
 .field {
   display: grid;
   gap: 8px;
@@ -1064,6 +1085,18 @@
 .arrowHint {
   color: var(--muted);
   font-size: 0.84rem;
+}
+
+@keyframes accordion-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .documentGrid {

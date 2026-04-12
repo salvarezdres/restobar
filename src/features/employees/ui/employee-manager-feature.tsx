@@ -54,19 +54,9 @@ export default function EmployeeManagerFeature() {
 
   return (
     <div className={styles.stack}>
-      <section className={styles.heroPanel} data-reveal>
-        <div className={styles.heroHeader}>
-          <span className={styles.statusPill}>Modulo de empleados</span>
-          <h2 className={styles.heroTitle}>
-            La ficha del trabajador ya no es solo administrativa: alimenta control legal activo.
-          </h2>
-          <p className={styles.heroDescription}>
-            Cada alta inicia seguimiento de contrato, cotizaciones, jornada y seguridad laboral.
-          </p>
-        </div>
-
+      <div data-reveal>
         <EmployeeOverviewCards {...overview} />
-      </section>
+      </div>
 
       <div className={styles.stack}>
         <section className={styles.highlightPanel} data-reveal>

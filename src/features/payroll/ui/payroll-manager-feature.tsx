@@ -110,6 +110,7 @@ export default function PayrollManagerFeature() {
   const [selectedEmployeeId, setSelectedEmployeeId] = useState("");
   const [selectedPeriod, setSelectedPeriod] = useState(() => currentMonthInput());
   const [contractDrafts, setContractDrafts] = useState<Record<string, Contract>>({});
+  const [editingContracts, setEditingContracts] = useState<Record<string, boolean>>({});
   const [payrollItemsByContext, setPayrollItemsByContext] = useState<
     Record<string, PayrollItem[]>
   >({});
@@ -140,6 +141,7 @@ export default function PayrollManagerFeature() {
   const contractDraft = suggestedContract
     ? contractDrafts[contextKey] ?? suggestedContract
     : null;
+  const isEditingContract = editingContracts[contextKey] ?? false;
   const payrollItems = useMemo(
     () => payrollItemsByContext[contextKey] ?? [],
     [contextKey, payrollItemsByContext],
@@ -245,7 +247,30 @@ export default function PayrollManagerFeature() {
       delete nextDrafts[contextKey];
       return nextDrafts;
     });
+    setEditingContracts((currentState) => ({
+      ...currentState,
+      [contextKey]: false,
+    }));
     setFeedback("Contrato guardado.");
+  }
+
+  function handleStartEditingContract() {
+    setEditingContracts((currentState) => ({
+      ...currentState,
+      [contextKey]: true,
+    }));
+  }
+
+  function handleCancelContractEditing() {
+    setContractDrafts((currentDrafts) => {
+      const nextDrafts = { ...currentDrafts };
+      delete nextDrafts[contextKey];
+      return nextDrafts;
+    });
+    setEditingContracts((currentState) => ({
+      ...currentState,
+      [contextKey]: false,
+    }));
   }
 
   async function handleSavePayroll() {
@@ -435,6 +460,7 @@ export default function PayrollManagerFeature() {
                       <span className={styles.fieldLabel}>Tipo de contrato</span>
                       <select
                         className={styles.select}
+                        disabled={!isEditingContract}
                         onChange={(event) =>
                           updateContractField(
                             "tipoContrato",
@@ -451,6 +477,7 @@ export default function PayrollManagerFeature() {
                       <span className={styles.fieldLabel}>Líquido objetivo</span>
                       <input
                         className={styles.input}
+                        disabled={!isEditingContract}
                         min="0"
                         onChange={(event) =>
                           updateContractField("sueldoBase", Number(event.target.value) || 0)
@@ -463,6 +490,7 @@ export default function PayrollManagerFeature() {
                       <span className={styles.fieldLabel}>Fecha inicio</span>
                       <input
                         className={styles.input}
+                        disabled={!isEditingContract}
                         onChange={(event) => updateContractField("fechaInicio", event.target.value)}
                         type="date"
                         value={contractDraft.fechaInicio}
@@ -472,6 +500,7 @@ export default function PayrollManagerFeature() {
                       <span className={styles.fieldLabel}>Fecha fin</span>
                       <input
                         className={styles.input}
+                        disabled={!isEditingContract}
                         onChange={(event) => updateContractField("fechaFin", event.target.value)}
                         type="date"
                         value={contractDraft.fechaFin ?? ""}
@@ -483,6 +512,7 @@ export default function PayrollManagerFeature() {
                     <span className={styles.fieldLabel}>Gratificación</span>
                     <select
                       className={styles.select}
+                      disabled={!isEditingContract}
                       onChange={(event) =>
                         updateContractField(
                           "gratificacionTipo",
@@ -497,14 +527,34 @@ export default function PayrollManagerFeature() {
                   </label>
 
                   <div className={styles.buttonRow}>
-                    <button
-                      className={styles.primaryButton}
-                      disabled={saveContract.isPending}
-                      onClick={() => void handleSaveContract()}
-                      type="button"
-                    >
-                      {saveContract.isPending ? "Guardando..." : "Guardar contrato"}
-                    </button>
+                    {isEditingContract ? (
+                      <>
+                        <button
+                          className={styles.primaryButton}
+                          disabled={saveContract.isPending}
+                          onClick={() => void handleSaveContract()}
+                          type="button"
+                        >
+                          {saveContract.isPending ? "Guardando..." : "Guardar contrato"}
+                        </button>
+                        <button
+                          className={styles.secondaryButton}
+                          disabled={saveContract.isPending}
+                          onClick={handleCancelContractEditing}
+                          type="button"
+                        >
+                          Cancelar
+                        </button>
+                      </>
+                    ) : (
+                      <button
+                        className={styles.secondaryButton}
+                        onClick={handleStartEditingContract}
+                        type="button"
+                      >
+                        Modificar contrato
+                      </button>
+                    )}
                   </div>
                 </section>
 
