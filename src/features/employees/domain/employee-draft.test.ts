@@ -13,16 +13,17 @@ describe("employee draft domain", () => {
     expect(draft.ownerId).toBe("owner-1");
     expect(draft.role).toBe("chef");
     expect(draft.legalProfile.employmentStartDate).toBe("2026-04-11");
-    expect(draft.legalProfile.lastContributionPaidMonth).toBe("2026-04");
+    expect(draft.legalProfile.lastContributionPaidMonth).toBe("");
   });
 
   it("validates required fields and invalid contract dates", () => {
     const emptyDraft = createEmptyEmployeeDraft("owner-1");
-    expect(validateEmployeeDraft(emptyDraft)).toBe("Nombre y sueldo son obligatorios.");
+    expect(validateEmployeeDraft(emptyDraft)).toBe("Nombre, RUT y sueldo son obligatorios.");
 
     const draft = {
       ...emptyDraft,
       name: "Ana",
+      rut: "12.345.678-5",
       salary: 900000,
       legalProfile: {
         ...emptyDraft.legalProfile,
@@ -40,6 +41,7 @@ describe("employee draft domain", () => {
     const draft = {
       ...createEmptyEmployeeDraft("owner-1"),
       name: "  Ana Perez  ",
+      rut: " 12.345.678-5 ",
       email: "  ana@example.com  ",
       salary: 900000,
       legalProfile: {
@@ -52,6 +54,7 @@ describe("employee draft domain", () => {
 
     expect(sanitized.ownerId).toBe("owner-2");
     expect(sanitized.name).toBe("Ana Perez");
+    expect(sanitized.rut).toBe("12.345.678-5");
     expect(sanitized.email).toBe("ana@example.com");
     expect(sanitized.legalProfile.mutualName).toBe("ACHS");
   });

@@ -15,15 +15,12 @@ function currentDateInput(referenceDate = new Date()) {
   return referenceDate.toISOString().slice(0, 10);
 }
 
-function currentMonthInput(referenceDate = new Date()) {
-  return referenceDate.toISOString().slice(0, 7);
-}
-
 export function createEmptyEmployeeDraft(ownerId: string, referenceDate = new Date()): Employee {
   return {
     id: "",
     ownerId,
     name: "",
+    rut: "",
     email: "",
     role: "chef",
     salary: 0,
@@ -31,7 +28,7 @@ export function createEmptyEmployeeDraft(ownerId: string, referenceDate = new Da
       employmentStartDate: currentDateInput(referenceDate),
       contractSignedDate: "",
       contractType: "indefinido",
-      lastContributionPaidMonth: currentMonthInput(referenceDate),
+      lastContributionPaidMonth: "",
       weeklyHours: 44,
       dailyWorkingHours: 9,
       breakMinutes: 60,
@@ -43,12 +40,16 @@ export function createEmptyEmployeeDraft(ownerId: string, referenceDate = new Da
 }
 
 export function validateEmployeeDraft(draft: Employee) {
-  if (!draft.name.trim() || draft.salary <= 0) {
-    return "Nombre y sueldo son obligatorios.";
+  if (!draft.name.trim() || !draft.rut?.trim() || draft.salary <= 0) {
+    return "Nombre, RUT y sueldo son obligatorios.";
   }
 
   if (!draft.legalProfile.employmentStartDate) {
     return "La fecha de ingreso es obligatoria para el seguimiento legal.";
+  }
+
+  if (!draft.legalProfile.contractType) {
+    return "El tipo de contrato es obligatorio para liquidaciones.";
   }
 
   if (
@@ -67,6 +68,7 @@ export function sanitizeEmployeeDraft(draft: Employee, ownerId: string): Employe
     ownerId,
     email: draft.email?.trim(),
     name: draft.name.trim(),
+    rut: draft.rut?.trim(),
     legalProfile: {
       ...draft.legalProfile,
       mutualName: draft.legalProfile.mutualName?.trim(),

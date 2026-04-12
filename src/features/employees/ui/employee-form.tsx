@@ -38,7 +38,7 @@ export function EmployeeForm({
             {draft.id ? "Editar trabajador" : "Nuevo trabajador"}
           </h2>
           <p className={styles.sectionDescription}>
-            La ficha legal debe quedar completa desde el ingreso o el motor de riesgo no sirve.
+            La ficha debe quedar lista para contrato, alertas y liquidaciones desde el primer guardado.
           </p>
         </div>
       </div>
@@ -51,6 +51,16 @@ export function EmployeeForm({
               className={styles.input}
               onChange={(event) => onDraftFieldChange("name", event.target.value)}
               value={draft.name}
+            />
+          </label>
+
+          <label className={styles.field}>
+            <span className={styles.fieldLabel}>RUT</span>
+            <input
+              className={styles.input}
+              onChange={(event) => onDraftFieldChange("rut", event.target.value)}
+              placeholder="12.345.678-5"
+              value={draft.rut ?? ""}
             />
           </label>
 
@@ -102,7 +112,7 @@ export function EmployeeForm({
             <div>
               <h3 className={styles.sectionTitle}>Control contractual y previsional</h3>
               <p className={styles.sectionDescription}>
-                Aqui vive el seguimiento que activa avisos, riesgo y eventual incumplimiento.
+                Estos datos alimentan la creacion de contrato y el calculo mensual de liquidaciones.
               </p>
             </div>
           </div>

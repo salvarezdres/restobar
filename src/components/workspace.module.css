@@ -366,6 +366,195 @@
   gap: 12px;
 }
 
+.payrollShell {
+  display: grid;
+  grid-template-columns: minmax(300px, 360px) minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+}
+
+.payrollSidebar,
+.payrollMain {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+}
+
+.payrollSidebar {
+  position: sticky;
+  top: 18px;
+}
+
+.payrollEmployeeList {
+  display: grid;
+  gap: 10px;
+}
+
+.payrollBuilderGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+}
+
+.payrollIdentityGrid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 12px;
+}
+
+.payrollContractGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.payrollItemList {
+  display: grid;
+  gap: 10px;
+}
+
+.payrollItemGrid {
+  display: grid;
+  grid-template-columns: 120px minmax(0, 1.4fr) 130px 120px;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.payrollPreviewHeader {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: start;
+}
+
+.payrollPreviewMetrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(120px, 1fr));
+  gap: 10px;
+}
+
+.payrollPreviewCard {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.02);
+  overflow: hidden;
+}
+
+.payrollPrintSheet {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+  background: #f8fafc;
+  color: #16202c;
+}
+
+.payrollPrintHeader {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(22, 32, 44, 0.14);
+}
+
+.payrollPrintTitle {
+  margin-top: 4px;
+  font-size: 1.05rem;
+  line-height: 1.1;
+}
+
+.payrollPrintMeta {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(110px, 1fr));
+  gap: 10px;
+}
+
+.payrollPrintMetaItem,
+.payrollPrintIdentityItem,
+.payrollPrintTotalItem {
+  display: grid;
+  gap: 4px;
+}
+
+.payrollPrintIdentity {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.payrollPrintTables {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.payrollPrintTableCard {
+  border: 1px solid rgba(22, 32, 44, 0.12);
+  border-radius: 14px;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.payrollPrintTableHeader {
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(22, 32, 44, 0.08);
+  background: #eef3f8;
+}
+
+.payrollPrintSectionTitle {
+  font-size: 0.86rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.payrollPrintTable {
+  display: grid;
+}
+
+.payrollPrintTableHead,
+.payrollPrintTableRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) 120px 120px;
+  gap: 10px;
+  align-items: center;
+  padding: 10px 12px;
+}
+
+.payrollPrintTableHead {
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #526170;
+  background: #f8fbfd;
+}
+
+.payrollPrintTableRow {
+  border-top: 1px solid rgba(22, 32, 44, 0.07);
+  font-size: 0.84rem;
+}
+
+.payrollPrintTotals {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.payrollPrintTotalItem {
+  padding: 12px;
+  border: 1px solid rgba(22, 32, 44, 0.12);
+  border-radius: 14px;
+  background: #ffffff;
+}
+
+.payrollPrintNet {
+  background: #dfeffd;
+  border-color: rgba(43, 91, 142, 0.2);
+}
+
 .highlightPanel {
   display: grid;
   gap: 14px;
@@ -972,11 +1161,18 @@
 
 @media (max-width: 1180px) {
   .dashboardGrid,
+  .payrollShell,
+  .payrollBuilderGrid,
   .progressiveGrid,
   .detailGrid,
   .workspaceGrid,
   .workspaceGridWide {
     grid-template-columns: 1fr;
+  }
+
+  .payrollSidebar {
+    position: static;
+    top: auto;
   }
 
   .summaryGrid {
@@ -1021,6 +1217,15 @@
   }
 
   .summaryGrid,
+  .payrollIdentityGrid,
+  .payrollContractGrid,
+  .payrollItemGrid,
+  .payrollPreviewHeader,
+  .payrollPreviewMetrics,
+  .payrollPrintIdentity,
+  .payrollPrintTables,
+  .payrollPrintTotals,
+  .payrollPrintMeta,
   .actionGrid,
   .processGrid,
   .splitMetrics,
@@ -1037,5 +1242,77 @@
   .tableHeadSix,
   .tableRowSix {
     grid-template-columns: 1fr;
+  }
+}
+
+@page {
+  size: A4 portrait;
+  margin: 10mm;
+}
+
+@media print {
+  .sidebar,
+  .topbar,
+  .heroPanel,
+  .summaryGrid,
+  .payrollSidebar,
+  .tableCard,
+  .buttonRow,
+  .rowMetrics,
+  .summaryHint {
+    display: none !important;
+  }
+
+  .content,
+  .page,
+  .shell,
+  .payrollMain,
+  .payrollPreviewCard,
+  .spotlightCard {
+    padding: 0 !important;
+    margin: 0 !important;
+    background: #ffffff !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+
+  .payrollBuilderGrid > :not(:last-child),
+  .payrollMain > .sectionHeader,
+  .payrollMain > .emptyCard {
+    display: none !important;
+  }
+
+  .payrollPrintSheet {
+    gap: 10px;
+    padding: 0;
+    background: #ffffff;
+    color: #000000;
+    min-height: auto;
+    max-height: 275mm;
+    break-inside: avoid;
+  }
+
+  .payrollPrintHeader,
+  .payrollPrintIdentity,
+  .payrollPrintTables,
+  .payrollPrintTotals,
+  .payrollPrintTableRow,
+  .payrollPrintTableHead {
+    break-inside: avoid;
+  }
+
+  .payrollPrintTitle {
+    font-size: 12pt;
+  }
+
+  .payrollPrintMetaItem,
+  .payrollPrintIdentityItem,
+  .payrollPrintTotalItem,
+  .payrollPrintTableRow {
+    font-size: 9pt;
+  }
+
+  .payrollPrintTableHead {
+    font-size: 8pt;
   }
 }

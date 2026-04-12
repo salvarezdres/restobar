@@ -2,9 +2,23 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import type { CostCatalogItem, Employee, Menu, Recipe, ScheduleEvent } from "@/lib/kitchen/types";
+import type {
+  Contract,
+  CostCatalogItem,
+  Employee,
+  Menu,
+  Payroll,
+  Recipe,
+  ScheduleEvent,
+} from "@/lib/kitchen/types";
 import { buildComplianceOverview } from "@/lib/legal-compliance";
 import { normalizeName } from "@/lib/kitchen/units";
+import {
+  createContract,
+  deleteContract,
+  listContracts,
+  updateContract,
+} from "@/lib/services/contracts";
 import {
   createCostItem,
   deleteCostItem,
@@ -22,6 +36,12 @@ import {
   listLegalChecks,
   syncEmployeeLegalChecks,
 } from "@/lib/services/legal-checks";
+import {
+  createPayroll,
+  deletePayroll,
+  listPayrolls,
+  updatePayroll,
+} from "@/lib/services/payrolls";
 import {
   createScheduleEvent,
   deleteScheduleEvent,
@@ -70,6 +90,22 @@ export function useEmployees(ownerId: string | undefined) {
     enabled: Boolean(ownerId),
     queryKey: ["workspace", ownerId, "employees"],
     queryFn: () => listEmployees(ownerId as string),
+  });
+}
+
+export function useContracts(ownerId: string | undefined) {
+  return useQuery({
+    enabled: Boolean(ownerId),
+    queryKey: ["workspace", ownerId, "contracts"],
+    queryFn: () => listContracts(ownerId as string),
+  });
+}
+
+export function usePayrolls(ownerId: string | undefined) {
+  return useQuery({
+    enabled: Boolean(ownerId),
+    queryKey: ["workspace", ownerId, "payrolls"],
+    queryFn: () => listPayrolls(ownerId as string),
   });
 }
 
@@ -244,6 +280,7 @@ export function useSaveEmployee(ownerId: string | undefined) {
     mutationFn: async (input: Employee) => {
       const payload = {
         name: input.name,
+        rut: input.rut,
         email: input.email,
         role: input.role,
         salary: input.salary,
@@ -276,6 +313,105 @@ export function useSaveEmployee(ownerId: string | undefined) {
         void queryClient.invalidateQueries({
           queryKey: ["workspace", ownerId, "legal-checks"],
         });
+      }
+    },
+  });
+}
+
+export function useSaveContract(ownerId: string | undefined) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (input: Contract) => {
+      const payload = {
+        active: input.active ?? true,
+        employeeId: input.employeeId,
+        employeeName: input.employeeName,
+        employeeRut: input.employeeRut,
+        fechaFin: input.fechaFin,
+        fechaInicio: input.fechaInicio,
+        gratificacionTipo: input.gratificacionTipo,
+        sueldoBase: input.sueldoBase,
+        tipoContrato: input.tipoContrato,
+      };
+
+      if (input.id) {
+        await updateContract(input.id, payload);
+        return;
+      }
+
+      await createContract({
+        ownerId: ownerId as string,
+        ...payload,
+      });
+    },
+    onSuccess: () => {
+      if (ownerId) {
+        invalidateWorkspace(queryClient, ownerId);
+      }
+    },
+  });
+}
+
+export function useDeleteContract(ownerId: string | undefined) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: deleteContract,
+    onSuccess: () => {
+      if (ownerId) {
+        invalidateWorkspace(queryClient, ownerId);
+      }
+    },
+  });
+}
+
+export function useSavePayroll(ownerId: string | undefined) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (input: Payroll) => {
+      const payload = {
+        contractId: input.contractId,
+        costoEmpresa: input.costoEmpresa,
+        descuentos: input.descuentos,
+        detalleItems: input.detalleItems,
+        employeeId: input.employeeId,
+        employeeName: input.employeeName,
+        employeeRut: input.employeeRut,
+        imponible: input.imponible,
+        legalAlerts: input.legalAlerts,
+        liquido: input.liquido,
+        noImponible: input.noImponible,
+        periodo: input.periodo,
+      };
+
+      if (input.id) {
+        await updatePayroll(input.id, payload);
+        return;
+      }
+
+      await createPayroll({
+        ownerId: ownerId as string,
+        ...payload,
+      });
+    },
+    onSuccess: () => {
+      if (ownerId) {
+        invalidateWorkspace(queryClient, ownerId);
+      }
+    },
+  });
+}
+
+export function useDeletePayroll(ownerId: string | undefined) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: deletePayroll,
+    onSuccess: () => {
+      if (ownerId) {
+        invalidateWorkspace(queryClient, ownerId);
       }
     },
   });

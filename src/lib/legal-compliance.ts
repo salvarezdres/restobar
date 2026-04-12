@@ -69,6 +69,14 @@ function currentMonthKey(referenceDate: Date) {
   return `${referenceDate.getFullYear()}-${String(referenceDate.getMonth() + 1).padStart(2, "0")}`;
 }
 
+function startOfMonth(date: Date) {
+  return new Date(date.getFullYear(), date.getMonth(), 1);
+}
+
+function addMonths(date: Date, months: number) {
+  return new Date(date.getFullYear(), date.getMonth() + months, 1);
+}
+
 function addAlert(
   employee: Employee,
   checkType: LegalCheckType,
@@ -379,12 +387,41 @@ function evaluateContract(employee: Employee, referenceDate: Date) {
 
 function evaluateContributions(employee: Employee, referenceDate: Date) {
   const alerts: LegalAlert[] = [];
+  const startDate = parseDate(
+    employee.legalProfile.contractSignedDate || employee.legalProfile.employmentStartDate,
+  );
   const currentIndex = monthIndex(currentMonthKey(referenceDate));
   const paidIndex = monthIndex(employee.legalProfile.lastContributionPaidMonth);
   const lastEvaluationDate = referenceDate.toISOString();
   const nextEvaluationDate = new Date(
     referenceDate.getTime() + 86_400_000,
   ).toISOString();
+
+  if (!startDate) {
+    return createCheck({
+      employee,
+      checkType: "cotizaciones",
+      riskLevel: "RIESGO BAJO",
+      summary: "Sin fecha laboral valida aun no se puede exigir seguimiento previsional confiable.",
+      alerts,
+      lastEvaluationDate,
+      nextEvaluationDate,
+    });
+  }
+
+  const firstContributionDueDate = addMonths(startOfMonth(startDate), 1);
+
+  if (referenceDate < firstContributionDueDate) {
+    return createCheck({
+      employee,
+      checkType: "cotizaciones",
+      riskLevel: "OK",
+      summary: "Aun no corresponde exigir cotizaciones: el primer periodo previsional sigue en curso.",
+      alerts,
+      lastEvaluationDate,
+      nextEvaluationDate,
+    });
+  }
 
   if (paidIndex === null || currentIndex === null) {
     alerts.push(
@@ -402,6 +439,22 @@ function evaluateContributions(employee: Employee, referenceDate: Date) {
       checkType: "cotizaciones",
       riskLevel: "RIESGO ALTO",
       summary: "No hay registro de pago previsional para el trabajador.",
+      alerts,
+      lastEvaluationDate,
+      nextEvaluationDate,
+    });
+  }
+
+  const dueIndex = monthIndex(
+    `${firstContributionDueDate.getFullYear()}-${String(firstContributionDueDate.getMonth() + 1).padStart(2, "0")}`,
+  );
+
+  if (dueIndex !== null && currentIndex !== null && currentIndex < dueIndex) {
+    return createCheck({
+      employee,
+      checkType: "cotizaciones",
+      riskLevel: "OK",
+      summary: "El primer mes exigible de cotizaciones aun no vence.",
       alerts,
       lastEvaluationDate,
       nextEvaluationDate,

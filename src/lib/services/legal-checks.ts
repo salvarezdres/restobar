@@ -16,6 +16,12 @@ import { mapFirestoreDoc } from "@/lib/services/firestore-utils";
 
 const COLLECTION_NAME = "legal_checks";
 
+function removeUndefinedFields<T extends Record<string, unknown>>(value: T) {
+  return Object.fromEntries(
+    Object.entries(value).filter(([, fieldValue]) => fieldValue !== undefined),
+  ) as T;
+}
+
 export async function syncEmployeeLegalChecks(employee: Employee) {
   const evaluation = evaluateEmployeeCompliance(employee);
 
@@ -31,7 +37,7 @@ export async function syncEmployeeLegalChecks(employee: Employee) {
           status: check.status,
           riskLevel: check.riskLevel,
           summary: check.summary,
-          alerts: check.alerts,
+          alerts: check.alerts.map((alert) => removeUndefinedFields(alert)),
           lastEvaluationDate: check.lastEvaluationDate,
           nextEvaluationDate: check.nextEvaluationDate,
           updatedAt: serverTimestamp(),

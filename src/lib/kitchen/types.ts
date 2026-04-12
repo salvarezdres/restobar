@@ -95,12 +95,87 @@ export type Employee = {
   id: string;
   ownerId: string;
   name: string;
+  rut?: string;
   email?: string;
   role: EmployeeRole;
   salary: number;
   legalProfile: EmployeeLegalProfile;
   createdAt?: string;
   updatedAt?: string;
+};
+
+export type ContractType = "indefinido" | "plazo-fijo";
+
+export type GratificationType = "articulo-50" | "sin-gratificacion";
+
+export type Contract = {
+  id: string;
+  ownerId: string;
+  employeeId: string;
+  employeeName: string;
+  employeeRut?: string;
+  tipoContrato: ContractType;
+  sueldoBase: number;
+  fechaInicio: string;
+  fechaFin?: string;
+  gratificacionTipo: GratificationType;
+  active?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+};
+
+export type PayrollItemType = "haber" | "descuento";
+
+export type PayrollItemCode =
+  | "sueldo-base"
+  | "gratificacion-legal"
+  | "bono"
+  | "comision"
+  | "colacion"
+  | "movilizacion"
+  | "otro-haber"
+  | "afp"
+  | "salud"
+  | "seguro-cesantia"
+  | "impuesto-unico"
+  | "anticipo"
+  | "otro-descuento";
+
+export type PayrollItem = {
+  tipo: PayrollItemType;
+  codigo: PayrollItemCode;
+  nombre: string;
+  monto: number;
+  imponible: boolean;
+};
+
+export type Payroll = {
+  id: string;
+  ownerId: string;
+  employeeId: string;
+  employeeName: string;
+  employeeRut?: string;
+  contractId?: string;
+  periodo: string;
+  imponible: number;
+  noImponible: number;
+  descuentos: number;
+  liquido: number;
+  costoEmpresa?: number;
+  detalleItems: PayrollItem[];
+  legalAlerts: string[];
+  createdAt?: string;
+  updatedAt?: string;
+};
+
+export type PayrollAlertSeverity = "info" | "warning" | "critical";
+
+export type PayrollAlert = {
+  id: string;
+  employeeId: string;
+  title: string;
+  description: string;
+  severity: PayrollAlertSeverity;
 };
 
 export type LegalAlert = {
