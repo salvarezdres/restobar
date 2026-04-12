@@ -57,6 +57,12 @@ import {
   updateRecipe,
 } from "@/lib/services/recipes";
 
+function stripUndefinedFields<T extends Record<string, unknown>>(payload: T) {
+  return Object.fromEntries(
+    Object.entries(payload).filter(([, value]) => value !== undefined),
+  ) as T;
+}
+
 function invalidateWorkspace(queryClient: ReturnType<typeof useQueryClient>, ownerId: string) {
   void queryClient.invalidateQueries({ queryKey: ["workspace", ownerId] });
 }
@@ -278,14 +284,14 @@ export function useSaveEmployee(ownerId: string | undefined) {
 
   return useMutation({
     mutationFn: async (input: Employee) => {
-      const payload = {
+      const payload = stripUndefinedFields({
         name: input.name,
         rut: input.rut,
         email: input.email,
         role: input.role,
         salary: input.salary,
         legalProfile: input.legalProfile,
-      };
+      });
 
       if (input.id) {
         await updateEmployee(input.id, payload);
@@ -323,7 +329,7 @@ export function useSaveContract(ownerId: string | undefined) {
 
   return useMutation({
     mutationFn: async (input: Contract) => {
-      const payload = {
+      const payload = stripUndefinedFields({
         active: input.active ?? true,
         employeeId: input.employeeId,
         employeeName: input.employeeName,
@@ -333,7 +339,7 @@ export function useSaveContract(ownerId: string | undefined) {
         gratificacionTipo: input.gratificacionTipo,
         sueldoBase: input.sueldoBase,
         tipoContrato: input.tipoContrato,
-      };
+      });
 
       if (input.id) {
         await updateContract(input.id, payload);
@@ -371,7 +377,7 @@ export function useSavePayroll(ownerId: string | undefined) {
 
   return useMutation({
     mutationFn: async (input: Payroll) => {
-      const payload = {
+      const payload = stripUndefinedFields({
         contractId: input.contractId,
         costoEmpresa: input.costoEmpresa,
         descuentos: input.descuentos,
@@ -384,7 +390,7 @@ export function useSavePayroll(ownerId: string | undefined) {
         liquido: input.liquido,
         noImponible: input.noImponible,
         periodo: input.periodo,
-      };
+      });
 
       if (input.id) {
         await updatePayroll(input.id, payload);

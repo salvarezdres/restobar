@@ -68,6 +68,60 @@ function roundCurrency(value: number) {
   return Math.round(value);
 }
 
+function parseDate(dateString?: string) {
+  if (!dateString) {
+    return null;
+  }
+
+  const parsed = new Date(`${dateString}T00:00:00`);
+  return Number.isNaN(parsed.getTime()) ? null : parsed;
+}
+
+function getMonthBounds(period: string) {
+  const periodStart = parseDate(`${period}-01`);
+
+  if (!periodStart) {
+    return null;
+  }
+
+  return {
+    periodStart,
+    periodEnd: new Date(periodStart.getFullYear(), periodStart.getMonth() + 1, 0),
+  };
+}
+
+function getWorkedDayRatio(contract: Contract, period: string) {
+  const monthBounds = getMonthBounds(period);
+  const contractStart = parseDate(contract.fechaInicio);
+  const contractEnd = parseDate(contract.fechaFin);
+
+  if (!monthBounds || !contractStart) {
+    return 1;
+  }
+
+  const effectiveStart = contractStart > monthBounds.periodStart
+    ? contractStart
+    : monthBounds.periodStart;
+  const effectiveEnd =
+    contractEnd && contractEnd < monthBounds.periodEnd
+      ? contractEnd
+      : monthBounds.periodEnd;
+
+  if (effectiveStart > effectiveEnd) {
+    return 0;
+  }
+
+  const millisecondsPerDay = 24 * 60 * 60 * 1000;
+  const workedDays =
+    Math.floor((effectiveEnd.getTime() - effectiveStart.getTime()) / millisecondsPerDay) + 1;
+  const totalDays =
+    Math.floor(
+      (monthBounds.periodEnd.getTime() - monthBounds.periodStart.getTime()) / millisecondsPerDay,
+    ) + 1;
+
+  return workedDays / totalDays;
+}
+
 function mergeConfig(config?: Partial<ChilePayrollConfig>): ChilePayrollConfig {
   return {
     ...DEFAULT_CHILE_PAYROLL_CONFIG,
@@ -246,7 +300,10 @@ function buildPayrollFromBaseSalary(params: {
 
 export function calculateChilePayroll(input: PayrollGenerationInput): PayrollCalculation {
   const config = mergeConfig(input.config);
-  const targetLiquid = roundCurrency(input.contract.sueldoBase || input.employee.salary || 0);
+  const workedDayRatio = getWorkedDayRatio(input.contract, input.period);
+  const targetLiquid = roundCurrency(
+    (input.contract.sueldoBase || input.employee.salary || 0) * workedDayRatio,
+  );
   const additionalItems = input.additionalItems.filter((item) => item.monto > 0);
   let low = 0;
   let high = Math.max(targetLiquid * 3, 250000);

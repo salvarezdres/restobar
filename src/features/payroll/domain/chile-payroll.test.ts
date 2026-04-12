@@ -138,4 +138,25 @@ describe("calculateChilePayroll", () => {
     expect(result.imponible).toBeGreaterThan(result.sueldoBaseCalculado);
     expect(result.noImponible).toBe(40000);
   });
+
+  it("prorates the liquidation when the contract does not cover the full month", () => {
+    const result = calculateChilePayroll({
+      contract: {
+        ...contract,
+        sueldoBase: 620000,
+        fechaInicio: "2026-02-15",
+      },
+      employee: {
+        ...employee,
+        salary: 620000,
+      },
+      period: "2026-02",
+      additionalItems: [],
+      config: DEFAULT_CHILE_PAYROLL_CONFIG,
+    });
+
+    expect(result.liquidoObjetivo).toBe(Math.round((620000 * 14) / 28));
+    expect(Math.abs(result.liquido - result.liquidoObjetivo)).toBeLessThanOrEqual(1);
+    expect(result.sueldoBaseCalculado).toBeLessThan(620000);
+  });
 });
