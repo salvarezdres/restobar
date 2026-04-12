@@ -2,6 +2,7 @@
   "hosting": {
     "site": "scrum-poket-453df",
     "public": "out",
+    "cleanUrls": true,
     "ignore": [
       "firebase.json",
       "**/.*",
