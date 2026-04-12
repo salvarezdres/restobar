@@ -57,7 +57,7 @@ export function useEmployeeManager(gateway: EmployeeFeatureGateway) {
 
     if (validationError) {
       setError(validationError);
-      return;
+      return false;
     }
 
     setError(null);
@@ -65,12 +65,14 @@ export function useEmployeeManager(gateway: EmployeeFeatureGateway) {
     try {
       await gateway.saveEmployee(sanitizeEmployeeDraft(draft, gateway.ownerId));
       resetDraft();
+      return true;
     } catch (saveError: unknown) {
       setError(
         saveError instanceof Error
           ? saveError.message
           : "No se pudo guardar el trabajador.",
       );
+      return false;
     }
   }
 

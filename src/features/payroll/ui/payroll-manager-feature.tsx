@@ -100,6 +100,7 @@ function getEmployeeStatus(
 
 export default function PayrollManagerFeature() {
   const { ownerId } = useWorkspaceSession();
+  const stableOwnerId = ownerId ?? "";
   const employeesQuery = useEmployees(ownerId);
   const contractsQuery = useContracts(ownerId);
   const payrollsQuery = usePayrolls(ownerId);
@@ -175,6 +176,14 @@ export default function PayrollManagerFeature() {
     () => payrolls.filter((payroll) => payroll.employeeId === selectedEmployee?.id),
     [payrolls, selectedEmployee],
   );
+  const selectedEmployeeCompanyCost = useMemo(
+    () =>
+      selectedEmployeePayrolls.reduce(
+        (total, payroll) => total + (payroll.costoEmpresa ?? payroll.liquido),
+        0,
+      ),
+    [selectedEmployeePayrolls],
+  );
 
   const totalCompanyCost = useMemo(
     () =>
@@ -224,7 +233,7 @@ export default function PayrollManagerFeature() {
 
     await saveContract.mutateAsync({
       ...contractDraft,
-      ownerId,
+      ownerId: stableOwnerId,
       employeeId: selectedEmployee.id,
       employeeName: selectedEmployee.name,
       employeeRut: selectedEmployee.rut,
@@ -253,7 +262,7 @@ export default function PayrollManagerFeature() {
 
     await savePayroll.mutateAsync({
       id: selectedEmployeePayrolls.find((item) => item.periodo === selectedPeriod)?.id ?? "",
-      ownerId,
+      ownerId: stableOwnerId,
       contractId: contractDraft.id || undefined,
       employeeId: selectedEmployee.id,
       employeeName: selectedEmployee.name,
@@ -400,7 +409,8 @@ export default function PayrollManagerFeature() {
                     <div>
                       <h3 className={styles.sectionTitle}>Contrato activo</h3>
                       <p className={styles.sectionDescription}>
-                        Base contractual editable para el periodo que estás cerrando.
+                        Define el líquido objetivo del periodo y el motor calcula base imponible,
+                        descuentos legales y total final.
                       </p>
                     </div>
                   </div>
@@ -438,7 +448,7 @@ export default function PayrollManagerFeature() {
                       </select>
                     </label>
                     <label className={styles.field}>
-                      <span className={styles.fieldLabel}>Sueldo base</span>
+                      <span className={styles.fieldLabel}>Líquido objetivo</span>
                       <input
                         className={styles.input}
                         min="0"
@@ -663,8 +673,12 @@ export default function PayrollManagerFeature() {
                           <strong>{selectedEmployee.rut ?? "Pendiente"}</strong>
                         </div>
                         <div className={styles.payrollPrintIdentityItem}>
-                          <span className={styles.smallLabel}>Sueldo base</span>
+                          <span className={styles.smallLabel}>Líquido objetivo</span>
                           <strong>{formatCurrency(contractDraft.sueldoBase)}</strong>
+                        </div>
+                        <div className={styles.payrollPrintIdentityItem}>
+                          <span className={styles.smallLabel}>Sueldo base calculado</span>
+                          <strong>{formatCurrency(preview.sueldoBaseCalculado)}</strong>
                         </div>
                         <div className={styles.payrollPrintIdentityItem}>
                           <span className={styles.smallLabel}>Gratificacion</span>
@@ -715,6 +729,10 @@ export default function PayrollManagerFeature() {
                       </div>
 
                       <section className={styles.payrollPrintTotals}>
+                        <div className={styles.payrollPrintTotalItem}>
+                          <span>Líquido objetivo</span>
+                          <strong>{formatCurrency(preview.liquidoObjetivo)}</strong>
+                        </div>
                         <div className={styles.payrollPrintTotalItem}>
                           <span>Total imponible</span>
                           <strong>{formatCurrency(preview.imponible)}</strong>
@@ -782,23 +800,33 @@ export default function PayrollManagerFeature() {
               Cierre documental del flujo, con tabla más limpia y legible por trabajador.
             </p>
           </div>
+          {selectedEmployeePayrolls.length ? (
+            <div className={styles.metaCard}>
+              <span className={styles.smallLabel}>Costo empresa acumulado</span>
+              <strong className={styles.metaValue}>
+                {formatCurrency(selectedEmployeeCompanyCost)}
+              </strong>
+            </div>
+          ) : null}
         </div>
 
         {selectedEmployeePayrolls.length ? (
           <div className={styles.table}>
-            <div className={styles.tableHeadFive}>
+            <div className={styles.tableHeadSix}>
               <span>Periodo</span>
               <span>Imponible</span>
               <span>Descuentos</span>
               <span>Líquido</span>
+              <span>Costo empresa</span>
               <span>Alertas</span>
             </div>
             {selectedEmployeePayrolls.map((payroll) => (
-              <div className={styles.tableRowFive} key={payroll.id}>
+              <div className={styles.tableRowSix} key={payroll.id}>
                 <span>{payroll.periodo}</span>
                 <span>{formatCurrency(payroll.imponible)}</span>
                 <span>{formatCurrency(payroll.descuentos)}</span>
                 <span>{formatCurrency(payroll.liquido)}</span>
+                <span>{formatCurrency(payroll.costoEmpresa ?? payroll.liquido)}</span>
                 <span>{payroll.legalAlerts.length}</span>
               </div>
             ))}

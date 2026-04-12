@@ -55,9 +55,11 @@ describe("calculateChilePayroll", () => {
       },
     });
 
-    expect(result.imponible).toBeGreaterThan(750000);
+    expect(result.liquidoObjetivo).toBe(750000);
+    expect(result.sueldoBaseCalculado).toBeGreaterThan(0);
+    expect(Math.abs(result.liquido - result.liquidoObjetivo)).toBeLessThanOrEqual(1);
+    expect(result.imponible).toBeGreaterThan(result.sueldoBaseCalculado);
     expect(result.descuentos).toBeGreaterThan(0);
-    expect(result.liquido).toBeLessThan(result.imponible);
     expect(result.detalleItems.some((item) => item.codigo === "afp")).toBe(true);
     expect(result.detalleItems.some((item) => item.codigo === "salud")).toBe(true);
     expect(result.detalleItems.some((item) => item.codigo === "seguro-cesantia")).toBe(true);
@@ -131,7 +133,9 @@ describe("calculateChilePayroll", () => {
       config: DEFAULT_CHILE_PAYROLL_CONFIG,
     });
 
-    expect(result.imponible).toBeGreaterThan(contract.sueldoBase);
+    expect(result.liquidoObjetivo).toBe(contract.sueldoBase);
+    expect(Math.abs(result.liquido - contract.sueldoBase)).toBeLessThanOrEqual(1);
+    expect(result.imponible).toBeGreaterThan(result.sueldoBaseCalculado);
     expect(result.noImponible).toBe(40000);
   });
 });

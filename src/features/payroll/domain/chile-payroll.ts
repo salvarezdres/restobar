@@ -32,6 +32,8 @@ export type PayrollGenerationInput = {
 };
 
 export type PayrollCalculation = {
+  sueldoBaseCalculado: number;
+  liquidoObjetivo: number;
   imponible: number;
   noImponible: number;
   descuentos: number;
@@ -121,16 +123,20 @@ function sumItems(
   }, 0);
 }
 
-export function calculateChilePayroll(input: PayrollGenerationInput): PayrollCalculation {
-  const config = mergeConfig(input.config);
-  const baseSalary = roundCurrency(input.contract.sueldoBase || input.employee.salary || 0);
-  const additionalItems = input.additionalItems.filter((item) => item.monto > 0);
+function buildPayrollFromBaseSalary(params: {
+  baseSalary: number;
+  config: ChilePayrollConfig;
+  contract: Contract;
+  additionalItems: PayrollItem[];
+}) {
+  const { additionalItems, baseSalary, config, contract } = params;
+  const roundedBaseSalary = roundCurrency(baseSalary);
   const additionalTaxableEarnings = sumItems(
     additionalItems,
     (item) => item.tipo === "haber" && item.imponible,
   );
   const gratification = roundCurrency(
-    getMonthlyGratification(input.contract, baseSalary + additionalTaxableEarnings, config),
+    getMonthlyGratification(contract, roundedBaseSalary + additionalTaxableEarnings, config),
   );
 
   const detailItems: PayrollItem[] = [
@@ -138,7 +144,7 @@ export function calculateChilePayroll(input: PayrollGenerationInput): PayrollCal
       tipo: "haber",
       codigo: "sueldo-base",
       nombre: "Sueldo base",
-      monto: baseSalary,
+      monto: roundedBaseSalary,
       imponible: true,
     },
     ...(gratification > 0
@@ -165,7 +171,7 @@ export function calculateChilePayroll(input: PayrollGenerationInput): PayrollCal
   const afp = roundCurrency(imponible * config.afpRate);
   const health = roundCurrency(imponible * config.healthRate);
   const unemployment =
-    input.contract.tipoContrato === "indefinido"
+    contract.tipoContrato === "indefinido"
       ? roundCurrency(imponible * config.unemploymentEmployeeRate)
       : 0;
   const taxableBase = Math.max(imponible - afp - health - unemployment, 0);
@@ -220,13 +226,14 @@ export function calculateChilePayroll(input: PayrollGenerationInput): PayrollCal
   const liquido = roundCurrency(imponible + noImponible - descuentos);
   const employerUnemployment = roundCurrency(
     imponible *
-      (input.contract.tipoContrato === "indefinido"
+      (contract.tipoContrato === "indefinido"
         ? config.unemploymentEmployerIndefiniteRate
         : config.unemploymentEmployerFixedTermRate),
   );
   const costoEmpresa = roundCurrency(imponible + noImponible + employerUnemployment);
 
   return {
+    sueldoBaseCalculado: roundedBaseSalary,
     imponible,
     noImponible,
     descuentos,
@@ -234,5 +241,67 @@ export function calculateChilePayroll(input: PayrollGenerationInput): PayrollCal
     baseTributable: taxableBase,
     costoEmpresa,
     detalleItems: detailItems,
+  };
+}
+
+export function calculateChilePayroll(input: PayrollGenerationInput): PayrollCalculation {
+  const config = mergeConfig(input.config);
+  const targetLiquid = roundCurrency(input.contract.sueldoBase || input.employee.salary || 0);
+  const additionalItems = input.additionalItems.filter((item) => item.monto > 0);
+  let low = 0;
+  let high = Math.max(targetLiquid * 3, 250000);
+  let bestResult = buildPayrollFromBaseSalary({
+    baseSalary: targetLiquid,
+    config,
+    contract: input.contract,
+    additionalItems,
+  });
+
+  for (let index = 0; index < 40; index += 1) {
+    const middle = Math.floor((low + high) / 2);
+    const candidate = buildPayrollFromBaseSalary({
+      baseSalary: middle,
+      config,
+      contract: input.contract,
+      additionalItems,
+    });
+
+    if (
+      Math.abs(candidate.liquido - targetLiquid) <
+      Math.abs(bestResult.liquido - targetLiquid)
+    ) {
+      bestResult = candidate;
+    }
+
+    if (candidate.liquido < targetLiquid) {
+      low = middle + 1;
+    } else {
+      high = middle - 1;
+    }
+  }
+
+  for (
+    let candidateBase = Math.max(bestResult.sueldoBaseCalculado - 5000, 0);
+    candidateBase <= bestResult.sueldoBaseCalculado + 5000;
+    candidateBase += 1
+  ) {
+    const candidate = buildPayrollFromBaseSalary({
+      baseSalary: candidateBase,
+      config,
+      contract: input.contract,
+      additionalItems,
+    });
+
+    if (
+      Math.abs(candidate.liquido - targetLiquid) <
+      Math.abs(bestResult.liquido - targetLiquid)
+    ) {
+      bestResult = candidate;
+    }
+  }
+
+  return {
+    liquidoObjetivo: targetLiquid,
+    ...bestResult,
   };
 }

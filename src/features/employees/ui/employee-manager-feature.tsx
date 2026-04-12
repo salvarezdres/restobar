@@ -1,5 +1,7 @@
 'use client'
 
+import { useState } from "react";
+
 import styles from "@/components/workspace.module.css";
 
 import { useEmployeeManager } from "../application/use-employee-manager";
@@ -9,6 +11,7 @@ import { EmployeeList } from "./employee-list";
 import { EmployeeOverviewCards } from "./employee-overview-cards";
 
 export default function EmployeeManagerFeature() {
+  const [isFormOpen, setIsFormOpen] = useState(false);
   const gateway = useEmployeeFeatureGateway();
   const {
     draft,
@@ -26,6 +29,29 @@ export default function EmployeeManagerFeature() {
     updateLegalProfileField,
   } = useEmployeeManager(gateway);
 
+  async function handleSaveDraft() {
+    const didSave = await saveDraft();
+
+    if (didSave) {
+      setIsFormOpen(false);
+    }
+  }
+
+  function handleCreateEmployee() {
+    resetDraft();
+    setIsFormOpen(true);
+  }
+
+  function handleCloseForm() {
+    resetDraft();
+    setIsFormOpen(false);
+  }
+
+  function handleEditEmployee(employee: (typeof employees)[number]) {
+    startEditing(employee);
+    setIsFormOpen(true);
+  }
+
   return (
     <div className={styles.stack}>
       <section className={styles.heroPanel} data-reveal>
@@ -42,19 +68,7 @@ export default function EmployeeManagerFeature() {
         <EmployeeOverviewCards {...overview} />
       </section>
 
-      <div className={styles.workspaceGridWide}>
-        <EmployeeForm
-          draft={draft}
-          error={error}
-          isSaving={isSaving}
-          onDraftFieldChange={updateDraftField}
-          onLegalProfileChange={updateLegalProfileField}
-          onReset={resetDraft}
-          onSave={() => {
-            void saveDraft();
-          }}
-        />
-
+      <div className={styles.stack}>
         <section className={styles.highlightPanel} data-reveal>
           <div className={styles.sectionHeader}>
             <div>
@@ -63,6 +77,13 @@ export default function EmployeeManagerFeature() {
                 La vista laboral debe dejar claro a quien puedes ignorar y a quien no.
               </p>
             </div>
+            <button
+              className={styles.primaryButton}
+              onClick={handleCreateEmployee}
+              type="button"
+            >
+              Añadir nuevo trabajador a la nómina
+            </button>
           </div>
 
           <EmployeeList
@@ -73,10 +94,50 @@ export default function EmployeeManagerFeature() {
                 void removeEmployee(employeeId);
               }
             }}
-            onEdit={startEditing}
+            onEdit={handleEditEmployee}
           />
         </section>
       </div>
+
+      {isFormOpen ? (
+        <div
+          aria-modal="true"
+          className={styles.modalOverlay}
+          onClick={handleCloseForm}
+          role="dialog"
+        >
+          <div className={styles.modalShell} onClick={(event) => event.stopPropagation()}>
+            <div className={styles.modalHeader}>
+              <div>
+                <span className={styles.statusPill}>
+                  {draft.id ? "Editar trabajador" : "Nuevo trabajador"}
+                </span>
+                <h2 className={styles.sectionTitle}>Ficha laboral para nómina y liquidaciones</h2>
+              </div>
+              <button
+                aria-label="Cerrar formulario"
+                className={styles.secondaryButton}
+                onClick={handleCloseForm}
+                type="button"
+              >
+                Cerrar
+              </button>
+            </div>
+
+            <EmployeeForm
+              draft={draft}
+              error={error}
+              isSaving={isSaving}
+              onDraftFieldChange={updateDraftField}
+              onLegalProfileChange={updateLegalProfileField}
+              onReset={resetDraft}
+              onSave={() => {
+                void handleSaveDraft();
+              }}
+            />
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

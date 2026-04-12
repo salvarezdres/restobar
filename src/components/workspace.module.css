@@ -292,6 +292,33 @@
   gap: 10px;
 }
 
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(5, 8, 12, 0.68);
+  backdrop-filter: blur(14px);
+}
+
+.modalShell {
+  width: min(1120px, 100%);
+  max-height: calc(100vh - 48px);
+  overflow: auto;
+  display: grid;
+  gap: 14px;
+}
+
+.modalHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 4px;
+}
+
 .heroPill,
 .statusPill,
 .miniPill {
@@ -448,8 +475,9 @@
   display: grid;
   gap: 14px;
   padding: 18px;
-  background: #f8fafc;
-  color: #16202c;
+  background:
+    linear-gradient(180deg, rgba(17, 23, 31, 0.96), rgba(11, 16, 22, 0.98));
+  color: #edf3fb;
 }
 
 .payrollPrintHeader {
@@ -458,7 +486,7 @@
   justify-content: space-between;
   gap: 16px;
   padding-bottom: 12px;
-  border-bottom: 1px solid rgba(22, 32, 44, 0.14);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .payrollPrintTitle {
@@ -493,16 +521,16 @@
 }
 
 .payrollPrintTableCard {
-  border: 1px solid rgba(22, 32, 44, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 14px;
   overflow: hidden;
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.03);
 }
 
 .payrollPrintTableHeader {
   padding: 10px 12px;
-  border-bottom: 1px solid rgba(22, 32, 44, 0.08);
-  background: #eef3f8;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(122, 162, 255, 0.08);
 }
 
 .payrollPrintSectionTitle {
@@ -528,12 +556,12 @@
   font-size: 0.72rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #526170;
-  background: #f8fbfd;
+  color: rgba(237, 243, 251, 0.68);
+  background: rgba(255, 255, 255, 0.03);
 }
 
 .payrollPrintTableRow {
-  border-top: 1px solid rgba(22, 32, 44, 0.07);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
   font-size: 0.84rem;
 }
 
@@ -545,14 +573,14 @@
 
 .payrollPrintTotalItem {
   padding: 12px;
-  border: 1px solid rgba(22, 32, 44, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 14px;
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.03);
 }
 
 .payrollPrintNet {
-  background: #dfeffd;
-  border-color: rgba(43, 91, 142, 0.2);
+  background: linear-gradient(135deg, rgba(122, 162, 255, 0.16), rgba(122, 162, 255, 0.06));
+  border-color: rgba(122, 162, 255, 0.18);
 }
 
 .highlightPanel {
@@ -1303,6 +1331,39 @@
 
   .payrollPrintTitle {
     font-size: 12pt;
+  }
+
+  .payrollPrintHeader {
+    border-bottom-color: rgba(22, 32, 44, 0.14);
+  }
+
+  .payrollPrintTableCard {
+    border-color: rgba(22, 32, 44, 0.12);
+    background: #ffffff;
+  }
+
+  .payrollPrintTableHeader {
+    border-bottom-color: rgba(22, 32, 44, 0.08);
+    background: #eef3f8;
+  }
+
+  .payrollPrintTableHead {
+    color: #526170;
+    background: #f8fbfd;
+  }
+
+  .payrollPrintTableRow {
+    border-top-color: rgba(22, 32, 44, 0.07);
+  }
+
+  .payrollPrintTotalItem {
+    border-color: rgba(22, 32, 44, 0.12);
+    background: #ffffff;
+  }
+
+  .payrollPrintNet {
+    background: #dfeffd;
+    border-color: rgba(43, 91, 142, 0.2);
   }
 
   .payrollPrintMetaItem,
