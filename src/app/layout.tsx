@@ -9,8 +9,8 @@ const orbitron = Orbitron({
 });
 
 export const metadata: Metadata = {
-  title: 'Insert coint',
-  description: 'Arcade retro neon Snake experience',
+  title: 'Frost Cube Arcade',
+  description: 'Retro neon platformer with an ice cube and sloped terrain',
 };
 
 export default function RootLayout({

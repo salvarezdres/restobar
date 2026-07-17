@@ -1,4 +1,4 @@
-import ArcadeSnakeGame from '@/components/arcade-snake-game';
+import IcePlatformerGame from '@/components/ice-platformer-game';
 
 export default function Page() {
   return (
@@ -7,7 +7,7 @@ export default function Page() {
         <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:42px_42px] opacity-40" />
         <div className="pointer-events-none absolute inset-0 arcade-vignette" />
         <div className="relative mx-auto flex min-h-screen w-full max-w-7xl items-center justify-center px-4 py-8 sm:px-6 lg:px-10">
-          <ArcadeSnakeGame />
+          <IcePlatformerGame />
         </div>
       </div>
     </main>
