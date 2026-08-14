@@ -4,6 +4,8 @@
 
 :root {
   color-scheme: dark;
+  --font-display: "Cormorant Garamond", "Times New Roman", serif;
+  --font-body: "Manrope", "Segoe UI", Arial, sans-serif;
 }
 
 html {
