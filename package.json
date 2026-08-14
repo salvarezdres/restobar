@@ -1,37 +1,24 @@
 {
-  "name": "menu-creator",
-  "version": "0.1.0",
+  "name": "escuelaelcarmen-react",
   "private": true,
+  "version": "0.1.0",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
-    "lint": "eslint",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "deploy:hosting": "firebase deploy --only hosting --project scrum-poket-453df"
+    "start": "next start"
   },
   "dependencies": {
-    "@tanstack/react-query": "^5.98.0",
-    "firebase": "^12.12.0",
-    "gsap": "^3.14.2",
-    "next": "16.2.3",
-    "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "next": "^15.4.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.2.2",
-    "@testing-library/jest-dom": "^6.9.1",
-    "@testing-library/react": "^16.3.2",
-    "@testing-library/user-event": "^14.6.1",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "eslint": "^9",
-    "eslint-config-next": "16.2.3",
-    "jsdom": "^29.0.2",
-    "tailwindcss": "^4.2.2",
-    "typescript": "^5",
-    "vitest": "^4.1.4"
+    "@types/node": "^22.10.0",
+    "@types/react": "^19.0.8",
+    "@types/react-dom": "^19.0.3",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.7.3"
   }
 }
